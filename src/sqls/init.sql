@@ -1,0 +1,39 @@
+CREATE TABLE if not exists users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    ctime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    mtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    version INT DEFAULT 1
+);
+
+CREATE TABLE if not exists objectives (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    ctime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    mtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE key_results (
+    id SERIAL PRIMARY KEY,
+    objective_id INT NOT NULL,
+    ctime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    mtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    progress DOUBLE PRECISION DEFAULT 0.0,
+    FOREIGN KEY (objective_id) REFERENCES objectives(id) ON DELETE CASCADE
+);
+
+CREATE TABLE result_progresses (
+    id SERIAL PRIMARY KEY,
+    key_result_id INT NOT NULL,
+    ctime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    mtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    progress DOUBLE PRECISION NOT NULL,
+    FOREIGN KEY (key_result_id) REFERENCES key_results(id) ON DELETE CASCADE
+);
