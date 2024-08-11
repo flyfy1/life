@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Header from "@/elements/header";
 
 export const metadata: Metadata = {
   title: "Life - Help you Grow",
@@ -13,7 +14,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="">{children}</body>
+      <body className="">
+        <Header/>
+        <main className="flex min-h-screen flex-col items-center justify-between p-24">
+          {children}
+        </main>
+      </body>
     </html>
   );
 }
