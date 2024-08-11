@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import "./globals.css";
+import type { Metadata } from "next";
 import Header from "@/elements/header";
 
 export const metadata: Metadata = {
@@ -13,10 +13,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className="">
         <Header/>
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <main className="">
           {children}
         </main>
       </body>
