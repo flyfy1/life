@@ -9,8 +9,22 @@
   display: flex;
   align-items: center;
   padding: 0 20px;
-  gap: 10px;
+  gap: 15px;
   z-index: 1000;
+}
+
+.toolbar .left-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.toolbar .right-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
 }
 
 .toolbar button {
@@ -52,4 +66,66 @@
   background-color: #f0f0f0;
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.toolbar .date-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar .date-range input[type="date"] {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.toolbar .date-range input[type="date"]:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.toolbar .date-range span {
+  color: #666;
+}
+
+.toolbar .sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar .sort-controls select {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+}
+
+.toolbar .sort-direction {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolbar .sort-direction:hover {
+  background-color: #f0f0f0;
+}
+
+.toolbar .sort-direction.asc {
+  color: #4a90e2;
+}
+
+.toolbar .sort-direction.desc {
+  color: #4a90e2;
 } 

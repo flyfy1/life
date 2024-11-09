@@ -27,4 +27,12 @@ export interface SyncResponse {
   to_timestamp: string;
   server_newer: Note[];
   only_on_server: Note[];
+}
+
+export type SortField = 'ctime' | 'mtime';
+export type SortDirection = 'asc' | 'desc';
+
+export interface SortOption {
+  field: SortField;
+  direction: SortDirection;
 } 

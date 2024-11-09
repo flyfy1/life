@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Note } from './types';
+import { Note, SyncRequest, SortOption } from './types';
 import { ApiService } from './services/api';
 import { DatabaseService } from './services/db';
 import { formatDateTime, formatRelativeTime } from './utils/dateFormat';
@@ -16,6 +16,14 @@ function App() {
   const [password, setPassword] = useState('');
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<{ startDate: string; endDate: string }>({
+    startDate: '', // 初始为空，等待笔记加载后更新
+    endDate: ''
+  });
+  const [sortOption, setSortOption] = useState<SortOption>({
+    field: 'ctime',
+    direction: 'desc'
+  });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -32,7 +40,35 @@ function App() {
 
   const loadLocalNotes = async () => {
     const localNotes = await DatabaseService.getAllNotes();
-    setNotes(localNotes);
+    const sortedNotes = sortNotes(localNotes);
+    setNotes(sortedNotes);
+    
+    if (sortedNotes.length > 0) {
+      const dates = sortedNotes.map(note => note.ctime.split('T')[0]);
+      setDateRange({
+        startDate: dates[dates.length - 1],
+        endDate: dates[0]
+      });
+    } else {
+      const today = new Date().toISOString().split('T')[0];
+      setDateRange({
+        startDate: today,
+        endDate: today
+      });
+    }
+  };
+
+  const sortNotes = (notesToSort: Note[]) => {
+    return [...notesToSort].sort((a, b) => {
+      const timeA = new Date(a[sortOption.field]).getTime();
+      const timeB = new Date(b[sortOption.field]).getTime();
+      return sortOption.direction === 'desc' ? timeB - timeA : timeA - timeB;
+    });
+  };
+
+  const handleSortChange = (newSortOption: SortOption) => {
+    setSortOption(newSortOption);
+    setNotes(sortNotes(notes));
   };
 
   const handleLogout = () => {
@@ -41,18 +77,36 @@ function App() {
     setNotes([]);
   };
 
+  const handleDateRangeChange = (newRange: { startDate: string; endDate: string }) => {
+    setDateRange(newRange);
+    filterNotesByDateRange(newRange);
+  };
+
+  const filterNotesByDateRange = async (range: { startDate: string; endDate: string }) => {
+    const allNotes = await DatabaseService.getAllNotes();
+    const filteredNotes = allNotes.filter(note => {
+      const noteDate = note.ctime.split('T')[0];
+      return noteDate >= range.startDate && noteDate <= range.endDate;
+    });
+    setNotes(sortNotes(filteredNotes));
+  };
+
   const handleManualSync = async () => {
     setIsSyncing(true);
     setSyncMessage(null);
     try {
-      await syncNotes();
+      const syncRequest: SyncRequest = {
+        from_timestamp: `${dateRange.startDate}T00:00:00Z`,
+        to_timestamp: `${dateRange.endDate}T23:59:59Z`,
+        notes: notes
+      };
+      const response = await ApiService.syncNotes(syncRequest);
       setSyncMessage('同步成功');
     } catch (error) {
       setSyncMessage('同步失败，请稍后重试');
       console.error('同步失败:', error);
     } finally {
       setIsSyncing(false);
-      // 3秒后清除消息
       setTimeout(() => setSyncMessage(null), 3000);
     }
   };
@@ -103,6 +157,10 @@ function App() {
         onLogout={handleLogout}
         isSyncing={isSyncing}
         syncMessage={syncMessage}
+        dateRange={dateRange}
+        onDateRangeChange={handleDateRangeChange}
+        sortOption={sortOption}
+        onSortChange={handleSortChange}
       />
       
       {!isLoggedIn ? (
