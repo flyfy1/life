@@ -1,4 +1,5 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+这之前是我通过NextJS的template创建的项目；现在已经用不到了 -
+我计划一切从简来创建我的笔记应用
 
 ## Getting Started
 
