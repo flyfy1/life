@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Note } from './types';
 import { ApiService } from './services/api';
 import { DatabaseService } from './services/db';
-import { formatDateTime } from './utils/dateFormat';
+import { formatDateTime, formatRelativeTime } from './utils/dateFormat';
+import ReactMarkdown from 'react-markdown';
+import './styles/notes.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -86,16 +88,21 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="notes-container">
       <h1>笔记列表</h1>
       {notes.map(note => (
-        <div key={note.uuid}>
-          <div>{note.content}</div>
-          <div className="note-meta">
-            创建时间: {formatDateTime(note.ctime)}
-            修改时间: {formatDateTime(note.mtime)}
-          </div>
-        </div>
+        <article key={note.uuid} className="note-article">
+          <header className="note-header">
+            <h1>{formatDateTime(note.ctime)}</h1>
+            <div className="note-meta">
+              <span>更新于: {formatRelativeTime(note.mtime)}</span>
+            </div>
+          </header>
+          
+          <section className="note-markdown-content">
+            <ReactMarkdown>{note.content}</ReactMarkdown>
+          </section>
+        </article>
       ))}
     </div>
   );
