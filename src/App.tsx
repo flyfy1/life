@@ -14,6 +14,8 @@ function App() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -40,7 +42,19 @@ function App() {
   };
 
   const handleManualSync = async () => {
-    await syncNotes();
+    setIsSyncing(true);
+    setSyncMessage(null);
+    try {
+      await syncNotes();
+      setSyncMessage('同步成功');
+    } catch (error) {
+      setSyncMessage('同步失败，请稍后重试');
+      console.error('同步失败:', error);
+    } finally {
+      setIsSyncing(false);
+      // 3秒后清除消息
+      setTimeout(() => setSyncMessage(null), 3000);
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -87,6 +101,8 @@ function App() {
         isLoggedIn={isLoggedIn}
         onSync={handleManualSync}
         onLogout={handleLogout}
+        isSyncing={isSyncing}
+        syncMessage={syncMessage}
       />
       
       {!isLoggedIn ? (
