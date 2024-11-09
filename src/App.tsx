@@ -4,7 +4,10 @@ import { ApiService } from './services/api';
 import { DatabaseService } from './services/db';
 import { formatDateTime, formatRelativeTime } from './utils/dateFormat';
 import ReactMarkdown from 'react-markdown';
+import { Toolbar } from './components/Toolbar';
 import './styles/notes.css';
+import './styles/toolbar.css';
+import './styles/login.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,8 +25,22 @@ function App() {
 
   const initializeApp = async () => {
     await DatabaseService.init();
+    await loadLocalNotes();
+  };
+
+  const loadLocalNotes = async () => {
+    const localNotes = await DatabaseService.getAllNotes();
+    setNotes(localNotes);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+    setNotes([]);
+  };
+
+  const handleManualSync = async () => {
     await syncNotes();
-    // startPeriodicSync();
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -64,46 +81,56 @@ function App() {
     setInterval(syncNotes, 5 * 60 * 1000); // 每5分钟同步一次
   };
 
-  if (!isLoggedIn) {
-    return (
-      <div>
-        <h2>登录</h2>
-        <form onSubmit={handleLogin}>
-          <input
-            type="text"
-            placeholder="用户名"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="密码"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button type="submit">登录</button>
-        </form>
-      </div>
-    );
-  }
-
   return (
-    <div className="notes-container">
-      <h1>笔记列表</h1>
-      {notes.map(note => (
-        <article key={note.uuid} className="note-article">
-          <header className="note-header">
-            <h1>{formatDateTime(note.ctime)}</h1>
-            <div className="note-meta">
-              <span>更新于: {formatRelativeTime(note.mtime)}</span>
-            </div>
-          </header>
-          
-          <section className="note-markdown-content">
-            <ReactMarkdown>{note.content}</ReactMarkdown>
-          </section>
-        </article>
-      ))}
+    <div>
+      <Toolbar 
+        isLoggedIn={isLoggedIn}
+        onSync={handleManualSync}
+        onLogout={handleLogout}
+      />
+      
+      {!isLoggedIn ? (
+        <div className="login-container">
+          <div className="login-box">
+            <h2>登录到笔记</h2>
+            <form className="login-form" onSubmit={handleLogin}>
+              <input
+                type="text"
+                placeholder="用户名"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="密码"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button type="submit">登录</button>
+            </form>
+          </div>
+        </div>
+      ) : (
+        <div className="notes-container">
+          <h1>笔记列表</h1>
+          {notes.map(note => (
+            <article key={note.uuid} className="note-article">
+              <header className="note-header">
+                <h1>{formatDateTime(note.ctime)}</h1>
+                <div className="note-meta">
+                  <span>更新于: {formatRelativeTime(note.mtime)}</span>
+                </div>
+              </header>
+              
+              <section className="note-markdown-content">
+                <ReactMarkdown>{note.content}</ReactMarkdown>
+              </section>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
