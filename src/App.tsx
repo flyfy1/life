@@ -101,6 +101,19 @@ function App() {
         notes: notes
       };
       const response = await ApiService.syncNotes(syncRequest);
+      
+      // 保存服务器上较新的笔记
+      const server_newer = response.server_newer || [];
+      const only_on_server = response.only_on_server || [];
+      
+      // 将两种笔记都保存到 IndexedDB
+      for (const note of [...server_newer, ...only_on_server]) {
+        await DatabaseService.saveNote(note);
+      }
+      
+      // 重新加载本地笔记
+      await loadLocalNotes();
+      
       setSyncMessage('同步成功');
     } catch (error) {
       setSyncMessage('同步失败，请稍后重试');
