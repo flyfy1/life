@@ -1,8 +1,19 @@
 # Life 
 
-[中文版](/README-zh.md)
-
 A diary/note synchronization application built with React and TypeScript, supporting both online and offline usage.
+
+## Setup
+
+```bash
+# install packages
+pnpm install
+
+# start local server
+pnpm start
+
+# deploy to gh-pages
+pnpm run deploy
+```
 
 ## Key Features
 
