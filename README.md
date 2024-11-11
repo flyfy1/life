@@ -1,46 +1,114 @@
-# Getting Started with Create React App
+# Life 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[中文版](/README-zh.md)
 
-## Available Scripts
+A diary/note synchronization application built with React and TypeScript, supporting both online and offline usage.
 
-In the project directory, you can run:
+## Key Features
 
-### `npm start`
+- User authentication
+- Online note synchronization
+- Offline storage support
+- Markdown content rendering
+- Note filtering by date range
+- Sorting by creation/modification time
+- Responsive interface design
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Tech Stack
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- React 18
+- TypeScript 4
+- IndexedDB (via idb library)
+- React Markdown
+- CSS3
 
-### `npm test`
+## Development Requirements
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js >= 16
+- npm >= 8
 
-### `npm run build`
+## Installation and Running
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Clone the project and install dependencies:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+git clone [project-url]
+cd [project-directory]
+npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Start the development server:
 
-### `npm run eject`
+```bash
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The application will run at http://localhost:3000
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Project Structure
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+src/
+  ├── components/      # React components
+  ├── services/        # API and database services
+  ├── styles/          # CSS style files
+  ├── types/          # TypeScript type definitions
+  ├── utils/          # Utility functions
+  └── App.tsx         # Application entry component
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Feature Details
 
-## Learn More
+### Authentication
+- Username and password login
+- JWT token authentication
+- Persistent login state
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Note Synchronization
+- Automatic periodic sync (every 5 minutes)
+- Manual sync trigger support
+- Offline-first strategy
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Data Storage
+- Local storage using IndexedDB
+- Offline access and editing support
+- Sync conflict resolution
+
+### Interface Features
+- Date range note filtering
+- Sorting by creation/modification time
+- Real-time Markdown rendering
+- Responsive design for mobile compatibility
+
+## API Configuration
+
+Default API address is `http://localhost:8080`, configurable in `src/services/api.ts` by modifying `API_BASE`.
+
+## Build and Deployment
+
+Execute the following command to build for production:
+
+```bash
+npm run build
+```
+
+Built files will be generated in the `build` directory, ready for deployment to a static server.
+
+## Development
+
+### Available Commands
+
+```bash
+npm start      # Start development server
+npm test      # Run tests
+npm run build  # Build for production
+npm run eject  # Eject configuration files
+```
+
+### Code Standards
+
+The project uses TypeScript strict mode to ensure type safety.
+
+## License
+
+This project is licensed under the MIT License.
