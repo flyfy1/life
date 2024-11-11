@@ -1,8 +1,8 @@
 import { LoginRequest, LoginResponse, SyncRequest, SyncResponse, Note } from '../types';
 
 // TODO: make it configurable
-// const API_BASE = 'https://api2.todopeer.com';
-const API_BASE = 'http://localhost:8080';
+const API_BASE = 'https://api2.todopeer.com';
+// const API_BASE = 'http://localhost:8080';
 
 export class ApiService {
   static async login(request: LoginRequest): Promise<LoginResponse> {
