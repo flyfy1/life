@@ -24,6 +24,7 @@ function App() {
     field: 'ctime',
     direction: 'desc'
   });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -131,8 +132,10 @@ function App() {
       localStorage.setItem('token', response.token);
       setIsLoggedIn(true);
       await initializeApp();
+      setErrorMessage(null);
     } catch (error) {
       console.error('登录失败:', error);
+      setErrorMessage('登录失败，请检查您的用户名和密码。');
     }
   };
 
@@ -176,17 +179,20 @@ function App() {
         onSortChange={handleSortChange}
       />
       
+      {errorMessage && <div className="toast">{errorMessage}</div>}
+
       {!isLoggedIn ? (
-        <div className="login-container">
-          <div className="login-box">
-            <h2>登录到笔记</h2>
-            <form className="login-form" onSubmit={handleLogin}>
+        <div className="flex flex-col items-center justify-center min-h-screen p-5 bg-gray-100">
+          <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+            <h2 className="text-center text-gray-800 text-2xl mb-5">登录到笔记</h2>
+            <form className="flex flex-col gap-4" onSubmit={handleLogin}>
               <input
                 type="text"
                 placeholder="用户名"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                className="p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               />
               <input
                 type="password"
@@ -194,8 +200,14 @@ function App() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               />
-              <button type="submit">登录</button>
+              <button
+                type="submit"
+                className="p-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+              >
+                登录
+              </button>
             </form>
           </div>
         </div>

@@ -28,11 +28,11 @@ export function Toolbar({
   onSortChange 
 }: ToolbarProps) {
   return (
-    <div className="toolbar">
+    <div className="fixed top-0 left-0 right-0 h-12 bg-gray-200 border-b border-gray-300 flex items-center px-4 gap-2 z-50">
       {isLoggedIn ? (
         <>
-          <div className="left-controls">
-            <div className="date-range">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <input
                 type="date"
                 value={dateRange.startDate}
@@ -41,6 +41,7 @@ export function Toolbar({
                   ...dateRange,
                   startDate: e.target.value
                 })}
+                className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               />
               <span>至</span>
               <input
@@ -51,23 +52,25 @@ export function Toolbar({
                   ...dateRange,
                   endDate: e.target.value
                 })}
+                className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               />
             </div>
             
-            <div className="sort-controls">
+            <div className="flex items-center gap-2">
               <select
                 value={sortOption.field}
                 onChange={(e) => onSortChange({
                   ...sortOption,
                   field: e.target.value as SortField
                 })}
+                className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               >
                 <option value="ctime">创建时间</option>
                 <option value="mtime">修改时间</option>
               </select>
               
               <button
-                className={`sort-direction ${sortOption.direction}`}
+                className={`p-2 border border-gray-300 rounded bg-white hover:bg-gray-100 transition ${sortOption.direction}`}
                 onClick={() => onSortChange({
                   ...sortOption,
                   direction: sortOption.direction === 'desc' ? 'asc' : 'desc'
