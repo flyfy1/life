@@ -81,8 +81,12 @@ export function Toolbar({
             </div>
           </div>
 
-          <div className="right-controls">
-            <button onClick={onSync} disabled={isSyncing}>
+          <div className="ml-auto flex items-center gap-2 right-controls">
+            <button 
+              onClick={onSync} 
+              disabled={isSyncing}
+              className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+            >
               {isSyncing ? '同步中...' : '同步笔记'}
             </button>
             <button onClick={onLogout}>退出登录</button>
