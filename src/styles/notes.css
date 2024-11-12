@@ -19,6 +19,9 @@
   color: #666;
   font-size: 0.9rem;
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .note-markdown-content {
@@ -26,4 +29,64 @@
   background: #f8f9fa;
   border-radius: 8px;
   margin: 1rem 0;
+}
+
+.note-article textarea {
+  width: 100%;
+  height: 100px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.edit-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+}
+
+.note-markdown-content h1 {
+  @apply text-2xl font-bold my-4;
+}
+
+.note-markdown-content h2 {
+  @apply text-xl font-bold my-3;
+}
+
+.note-markdown-content h3 {
+  @apply text-lg font-bold my-2;
+}
+
+.note-markdown-content p {
+  @apply my-2;
+}
+
+.note-markdown-content ul,
+.note-markdown-content ol {
+  @apply list-disc pl-5 my-2;
+}
+
+.note-markdown-content li {
+  @apply my-1;
+}
+
+.note-markdown-content blockquote {
+  @apply border-l-4 border-gray-300 pl-4 italic my-2;
+}
+
+.note-markdown-content code {
+  @apply bg-gray-200 p-1 rounded;
+}
+
+.note-markdown-content pre {
+  @apply bg-gray-200 p-2 rounded my-2;
 } 

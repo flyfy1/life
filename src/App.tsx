@@ -25,6 +25,7 @@ function App() {
     direction: 'desc'
   });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [editingNote, setEditingNote] = useState<Note | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -165,6 +166,17 @@ function App() {
     setInterval(syncNotes, 5 * 60 * 1000); // 每5分钟同步一次
   };
 
+  const handleEditNote = (note: Note) => {
+    setEditingNote(note);
+  };
+
+  const handleSaveNote = async (updatedNote: Note) => {
+    updatedNote.mtime = new Date().toISOString(); // 更新修改时间
+    await DatabaseService.saveNote(updatedNote);
+    setEditingNote(null);
+    await loadLocalNotes(); // 重新加载笔记
+  };
+
   return (
     <div>
       <Toolbar 
@@ -218,14 +230,30 @@ function App() {
             <article key={note.uuid} className="note-article">
               <header className="note-header">
                 <h1>{formatDateTime(note.ctime)}</h1>
-                <div className="note-meta">
+                <div className="note-meta flex justify-between items-center">
                   <span>更新于: {formatRelativeTime(note.mtime)}</span>
+                  <button 
+                    onClick={() => handleEditNote(note)} 
+                    className="edit-button"
+                  >
+                    编辑
+                  </button>
                 </div>
               </header>
               
-              <section className="note-markdown-content">
-                <ReactMarkdown>{note.content}</ReactMarkdown>
-              </section>
+              {editingNote?.uuid === note.uuid ? (
+                <div>
+                  <textarea
+                    value={editingNote.content}
+                    onChange={(e) => setEditingNote({ ...editingNote, content: e.target.value })}
+                  />
+                  <button onClick={() => handleSaveNote(editingNote)}>保存</button>
+                </div>
+              ) : (
+                <section className="note-markdown-content">
+                  <ReactMarkdown>{note.content}</ReactMarkdown>
+                </section>
+              )}
             </article>
           ))}
         </div>
