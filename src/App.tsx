@@ -170,6 +170,10 @@ function App() {
     setEditingNote(note);
   };
 
+  const handleCancelEdit = () => {
+    setEditingNote(null);
+  };
+
   const handleSaveNote = async (updatedNote: Note) => {
     updatedNote.mtime = new Date().toISOString(); // 更新修改时间
     await DatabaseService.saveNote(updatedNote);
@@ -232,12 +236,6 @@ function App() {
                 <h1>{formatDateTime(note.ctime)}</h1>
                 <div className="note-meta flex justify-between items-center">
                   <span>更新于: {formatRelativeTime(note.mtime)}</span>
-                  <button 
-                    onClick={() => handleEditNote(note)} 
-                    className="edit-button"
-                  >
-                    编辑
-                  </button>
                 </div>
               </header>
               
@@ -247,11 +245,28 @@ function App() {
                     value={editingNote.content}
                     onChange={(e) => setEditingNote({ ...editingNote, content: e.target.value })}
                   />
-                  <button onClick={() => handleSaveNote(editingNote)}>保存</button>
+                  <button 
+                    onClick={() => handleSaveNote(editingNote)} 
+                    className="edit-button"
+                  >
+                    保存
+                  </button>
+                  <button 
+                    onClick={handleCancelEdit} 
+                    className="edit-button"
+                  >
+                    取消
+                  </button>
                 </div>
               ) : (
                 <section className="note-markdown-content">
                   <ReactMarkdown>{note.content}</ReactMarkdown>
+                  <button 
+                    onClick={() => handleEditNote(note)} 
+                    className="edit-button"
+                  >
+                    编辑
+                  </button>
                 </section>
               )}
             </article>
