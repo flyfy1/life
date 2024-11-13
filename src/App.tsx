@@ -8,6 +8,7 @@ import { Toolbar } from './components/Toolbar';
 import './styles/notes.css';
 import './styles/toolbar.css';
 import './styles/login.css';
+import { generateUUID } from './utils/uuid'; // 导入 generateUUID 函数
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,6 +27,9 @@ function App() {
   });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
+
+  const [newNoteContent, setNewNoteContent] = useState('');
+  const [addingNote, setAddingNote] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -181,6 +185,28 @@ function App() {
     await loadLocalNotes(); // 重新加载笔记
   };
 
+  const handleCancelAdd = async () => {
+    setAddingNote(false);
+  }
+  const handleAddNote = async () => {
+    setAddingNote(true);
+  };
+  const handleConfirmAdd = async () => {
+    if (newNoteContent.trim()) {
+      const newNote: Note = {
+        id: Date.now(), // 或者使用其他唯一标识符
+        uuid: generateUUID(), // 使用 generateUUID 生成 UUID
+        ctime: new Date().toISOString(),
+        mtime: new Date().toISOString(),
+        content: newNoteContent,
+      };
+      await DatabaseService.saveNote(newNote);
+      setNewNoteContent(''); // 清空输入框
+      setAddingNote(false);
+      await loadLocalNotes(); // 重新加载笔记
+    }
+  };
+
   return (
     <div>
       <Toolbar 
@@ -229,7 +255,40 @@ function App() {
         </div>
       ) : (
         <div className="notes-container">
-          <h1>笔记列表</h1>
+          <div className="flex justify-between items-center">
+            <h1>我的笔记</h1>
+            <button 
+              onClick={handleAddNote} // 点击时清空输入框
+              className="edit-button" // 使用 edit-button 类
+            >
+              添加笔记
+            </button>
+          </div>
+
+          {addingNote && (
+            <div>
+              <div>
+              <textarea
+                value={newNoteContent}
+                onChange={(e) => setNewNoteContent(e.target.value)}
+                placeholder="输入新笔记内容..."
+              />
+              </div>
+              <button 
+                onClick={handleConfirmAdd} 
+                className="edit-button"
+              >
+                保存笔记
+              </button>
+              <button 
+                onClick={handleCancelAdd} 
+                className="cancel-button"
+              >
+                取消
+              </button>
+            </div>
+          )}
+
           {notes.map(note => (
             <article key={note.uuid} className="note-article">
               <header className="note-header">
