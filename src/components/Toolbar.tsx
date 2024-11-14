@@ -14,6 +14,7 @@ interface ToolbarProps {
   onDateRangeChange: (range: { startDate: string; endDate: string }) => void;
   sortOption: SortOption;
   onSortChange: (option: SortOption) => void;
+  changeLang: (lng:string) => void
 }
 
 export function Toolbar({ 
@@ -25,7 +26,8 @@ export function Toolbar({
   dateRange,
   onDateRangeChange,
   sortOption,
-  onSortChange 
+  onSortChange,
+  changeLang
 }: ToolbarProps) {
   return (
     <div className="fixed top-0 left-0 right-0 h-12 bg-gray-200 border-b border-gray-300 flex items-center px-4 gap-2 z-50">
@@ -90,6 +92,8 @@ export function Toolbar({
               {isSyncing ? '同步中...' : '同步笔记'}
             </button>
             <button onClick={onLogout}>退出登录</button>
+            <button onClick={() => changeLang('en')}>English</button>
+            <button onClick={() => changeLang('zh')}>中文</button>
             {syncMessage && <span className="sync-message">{syncMessage}</span>}
           </div>
         </>

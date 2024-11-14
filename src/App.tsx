@@ -9,8 +9,11 @@ import './styles/notes.css';
 import './styles/toolbar.css';
 import './styles/login.css';
 import { generateUUID } from './utils/uuid'; // 导入 generateUUID 函数
+import { useTranslation } from 'react-i18next'; // 引入 useTranslation
+import i18n from './i18n'; // 导入 i18n 配置
 
 function App() {
+  const { t } = useTranslation(); // 获取翻译函数
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [notes, setNotes] = useState<Note[]>([]);
   const [username, setUsername] = useState('');
@@ -207,6 +210,10 @@ function App() {
     }
   };
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
     <div>
       <Toolbar 
@@ -219,6 +226,7 @@ function App() {
         onDateRangeChange={handleDateRangeChange}
         sortOption={sortOption}
         onSortChange={handleSortChange}
+        changeLang={changeLanguage}
       />
       
       {errorMessage && <div className="toast">{errorMessage}</div>}
@@ -226,11 +234,11 @@ function App() {
       {!isLoggedIn ? (
         <div className="flex flex-col items-center justify-center min-h-screen p-5 bg-gray-100">
           <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-            <h2 className="text-center text-gray-800 text-2xl mb-5">登录到笔记</h2>
+            <h2 className="text-center text-gray-800 text-2xl mb-5">{t('login')}到笔记</h2>
             <form className="flex flex-col gap-4" onSubmit={handleLogin}>
               <input
                 type="text"
-                placeholder="用户名"
+                placeholder={t('username')}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -238,7 +246,7 @@ function App() {
               />
               <input
                 type="password"
-                placeholder="密码"
+                placeholder={t('password')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -248,7 +256,7 @@ function App() {
                 type="submit"
                 className="p-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
               >
-                登录
+                {t('login')}
               </button>
             </form>
           </div>
@@ -256,12 +264,12 @@ function App() {
       ) : (
         <div className="notes-container">
           <div className="flex justify-between items-center">
-            <h1>我的笔记</h1>
+            <h1>{t('my_notes')}</h1>
             <button 
-              onClick={handleAddNote} // 点击时清空输入框
-              className="edit-button" // 使用 edit-button 类
+              onClick={handleAddNote}
+              className="edit-button"
             >
-              添加笔记
+              {t('add_note')}
             </button>
           </div>
 
@@ -278,13 +286,13 @@ function App() {
                 onClick={handleConfirmAdd} 
                 className="edit-button"
               >
-                保存笔记
+                {t('save')}
               </button>
               <button 
                 onClick={handleCancelAdd} 
                 className="cancel-button"
               >
-                取消
+                {t('cancel')}
               </button>
             </div>
           )}
@@ -308,13 +316,13 @@ function App() {
                     onClick={() => handleSaveNote(editingNote)} 
                     className="edit-button"
                   >
-                    保存
+                    {t('save')}
                   </button>
                   <button 
                     onClick={handleCancelEdit} 
                     className="edit-button"
                   >
-                    取消
+                    {t('cancel')}
                   </button>
                 </div>
               ) : (
@@ -324,7 +332,7 @@ function App() {
                     onClick={() => handleEditNote(note)} 
                     className="edit-button"
                   >
-                    编辑
+                    {t('edit')}
                   </button>
                 </section>
               )}
