@@ -19,6 +19,7 @@ interface ToolbarProps {
   t: TFunction;
   syncDays: number;
   onSyncDaysChange: (days: number) => void;
+  onAddNote: () => void;
 }
 
 export function Toolbar({ 
@@ -34,7 +35,8 @@ export function Toolbar({
   changeLang,
   t,
   syncDays,
-  onSyncDaysChange
+  onSyncDaysChange,
+  onAddNote
 }: ToolbarProps) {
   return (
     <div className="toolbar flex items-center px-4 gap-2">
@@ -91,6 +93,9 @@ export function Toolbar({
           </div>
 
           <div className="ml-auto flex items-center gap-2 right-controls">
+            <button onClick={onAddNote} className="edit-button">
+              {t('add_note')}
+            </button>
             <select value={syncDays} onChange={(e) => onSyncDaysChange(Number(e.target.value))}>
               <option value={7}>{t('last_x_days', { days: 7 })}</option>
               <option value={14}>{t('last_x_days', { days: 14 })}</option>

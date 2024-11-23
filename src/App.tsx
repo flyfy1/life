@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Note, SyncRequest, SortOption } from './types';
 import { ApiService } from './services/api';
 import { DatabaseService } from './services/db';
@@ -34,6 +34,8 @@ function App() {
   const [newNoteContent, setNewNoteContent] = useState('');
   const [addingNote, setAddingNote] = useState(false);
   const [syncDays, setSyncDays] = useState(7); // 新增状态，默认选择最近7天
+
+  const newNoteInputRef = useRef<HTMLTextAreaElement | null>(null); // 创建 ref
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -107,7 +109,7 @@ function App() {
     try {
       const endDate = new Date();
       const startDate = new Date();
-      startDate.setDate(endDate.getDate() - syncDays); // 根据选择的天数计算开始日期
+      startDate.setDate(endDate.getDate() - syncDays); // 根据选择的天计算开始日期
 
       const syncRequest: SyncRequest = {
         from_timestamp: `${startDate.toISOString().split('T')[0]}T00:00:00Z`,
@@ -197,7 +199,12 @@ function App() {
     setAddingNote(false);
   }
   const handleAddNote = async () => {
-    setAddingNote(true);
+    setAddingNote(true); // 先更新状态
+    setTimeout(() => {
+      if (newNoteInputRef.current) {
+        newNoteInputRef.current.focus(); // 然后设置焦点
+      }
+    }, 0); // 立即执行
   };
   const handleConfirmAdd = async () => {
     if (newNoteContent.trim()) {
@@ -239,6 +246,7 @@ function App() {
         t={t}
         syncDays={syncDays}
         onSyncDaysChange={handleSyncDaysChange}
+        onAddNote={handleAddNote}
       />
       
       {errorMessage && <div className="toast">{errorMessage}</div>}
@@ -277,18 +285,13 @@ function App() {
         <div className="notes-container">
           <div className="flex justify-between items-center">
             <h1 className='site-title'>{t('my_notes')}</h1>
-            <button 
-              onClick={handleAddNote}
-              className="edit-button"
-            >
-              {t('add_note')}
-            </button>
           </div>
 
           {addingNote && (
             <div>
               <div>
               <textarea
+                ref={newNoteInputRef} // 绑定 ref
                 value={newNoteContent}
                 onChange={(e) => setNewNoteContent(e.target.value)}
                 placeholder="输入新笔记内容..."
