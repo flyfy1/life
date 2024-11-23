@@ -1,24 +1,2 @@
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open('my-cache').then((cache) => {
-      return cache.addAll([
-        '/',
-        '/index.html',
-        '/static/js/bundle.js',
-        '/static/js/main.js',
-        '/static/css/main.css',
-        // 添加其他需要缓存的资源
-      ]).catch((error) => {
-        console.error('缓存失败:', error); // 记录失败的请求
-      });
-    })
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
-  );
-}); 
+if(!self.define){let e,s={};const i=(i,n)=>(i=new URL(i+".js",n).href,s[i]||new Promise((s=>{if("document"in self){const e=document.createElement("script");e.src=i,e.onload=s,document.head.appendChild(e)}else e=i,importScripts(i),s()})).then((()=>{let e=s[i];if(!e)throw new Error(`Module ${i} didn’t register its module`);return e})));self.define=(n,c)=>{const o=e||("document"in self?document.currentScript.src:"")||location.href;if(s[o])return;let r={};const t=e=>i(e,o),d={module:{uri:o},exports:r,require:t};s[o]=Promise.all(n.map((e=>d[e]||t(e)))).then((e=>(c(...e),r)))}}define(["./workbox-099bf95e"],(function(e){"use strict";self.skipWaiting(),e.clientsClaim(),e.precacheAndRoute([{url:"asset-manifest.json",revision:"ab1267d369bed02e695d6b81f6d9ad6a"},{url:"index.html",revision:"4ceecaed56a5551b3c18b626ad1748e6"},{url:"logo192.png",revision:"33dbdd0177549353eeeb785d02c294af"},{url:"logo512.png",revision:"917515db74ea8d1aee6a246cfbcc0b45"},{url:"manifest.json",revision:"7b5d544867bad6dc61ca99b065866f6b"},{url:"static/css/main.4c602f6a.css",revision:"50d0b73a3dfd949f1ee37f7986618238"},{url:"static/js/646.cf3f2924.chunk.js",revision:"1c5f8c871eca64d351cb1fb8a1510436"},{url:"static/js/main.a8cdf1e8.js",revision:"e925e0a65d517aadb56c8c83aba6b9ba"}],{})}));
+//# sourceMappingURL=service-worker.js.map
