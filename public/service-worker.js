@@ -1,15 +1,12 @@
+import { precaching } from 'workbox-precaching';
+
+self.__WB_MANIFEST = self.__WB_MANIFEST || [];
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open('my-cache').then((cache) => {
-      return cache.addAll([
-        '/',
-        '/index.html',
-        '/static/js/bundle.js',
-        '/static/js/main.js',
-        '/static/css/main.css',
-        // 添加其他需要缓存的资源
-      ]).catch((error) => {
-        console.error('缓存失败:', error); // 记录失败的请求
+      return cache.addAll(self.__WB_MANIFEST).catch((error) => {
+        console.error('缓存失败:', error);
       });
     })
   );
