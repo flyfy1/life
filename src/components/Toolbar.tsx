@@ -14,7 +14,8 @@ interface ToolbarProps {
   onDateRangeChange: (range: { startDate: string; endDate: string }) => void;
   sortOption: SortOption;
   onSortChange: (option: SortOption) => void;
-  changeLang: (lng:string) => void
+  changeLang: (lng: string) => void;
+  t: (key: string) => string;
 }
 
 export function Toolbar({ 
@@ -27,7 +28,8 @@ export function Toolbar({
   onDateRangeChange,
   sortOption,
   onSortChange,
-  changeLang
+  changeLang,
+  t
 }: ToolbarProps) {
   return (
     <div className="fixed top-0 left-0 right-0 h-12 bg-gray-200 border-b border-gray-300 flex items-center px-4 gap-2 z-50">
@@ -45,7 +47,7 @@ export function Toolbar({
                 })}
                 className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               />
-              <span>至</span>
+              <span>{t('to')}</span>
               <input
                 type="date"
                 value={dateRange.endDate}
@@ -67,8 +69,8 @@ export function Toolbar({
                 })}
                 className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               >
-                <option value="ctime">创建时间</option>
-                <option value="mtime">修改时间</option>
+                <option value="ctime">{t('creation_time')}</option>
+                <option value="mtime">{t('modification_time')}</option>
               </select>
               
               <button
@@ -89,11 +91,13 @@ export function Toolbar({
               disabled={isSyncing}
               className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
             >
-              {isSyncing ? '同步中...' : '同步笔记'}
+              {isSyncing ? t('syncing') : t('sync_notes')}
             </button>
-            <button onClick={onLogout}>退出登录</button>
-            <button onClick={() => changeLang('en')}>English</button>
-            <button onClick={() => changeLang('zh')}>中文</button>
+            <button onClick={onLogout}>{t('logout')}</button>
+            <select onChange={(e) => changeLang(e.target.value)} className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+              <option value="zh">中文</option>
+              <option value="en">English</option>
+            </select>
             {syncMessage && <span className="sync-message">{syncMessage}</span>}
           </div>
         </>

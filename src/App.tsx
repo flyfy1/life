@@ -227,6 +227,7 @@ function App() {
         sortOption={sortOption}
         onSortChange={handleSortChange}
         changeLang={changeLanguage}
+        t={t}
       />
       
       {errorMessage && <div className="toast">{errorMessage}</div>}
