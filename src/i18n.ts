@@ -42,6 +42,7 @@ const translations: KeyTranslations = translate([
     ["syncing", "Syncing...", "同步中..."],
     ["sync_notes", "Sync Notes", "同步笔记"],
     ["logout", "Logout", "退出登录"],
+    ["last_x_days", "最近{{days}}天", "最近{{days}}天"],
 ]);
 
 i18n

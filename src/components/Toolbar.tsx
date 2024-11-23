@@ -1,5 +1,6 @@
 import React from 'react';
 import { SortField, SortDirection, SortOption } from '../types/index';
+import { TFunction } from 'i18next';
 
 interface ToolbarProps {
   isLoggedIn: boolean;
@@ -15,7 +16,9 @@ interface ToolbarProps {
   sortOption: SortOption;
   onSortChange: (option: SortOption) => void;
   changeLang: (lng: string) => void;
-  t: (key: string) => string;
+  t: TFunction;
+  syncDays: number;
+  onSyncDaysChange: (days: number) => void;
 }
 
 export function Toolbar({ 
@@ -29,7 +32,9 @@ export function Toolbar({
   sortOption,
   onSortChange,
   changeLang,
-  t
+  t,
+  syncDays,
+  onSyncDaysChange
 }: ToolbarProps) {
   return (
     <div className="fixed top-0 left-0 right-0 h-12 bg-gray-200 border-b border-gray-300 flex items-center px-4 gap-2 z-50">
@@ -86,6 +91,11 @@ export function Toolbar({
           </div>
 
           <div className="ml-auto flex items-center gap-2 right-controls">
+            <select value={syncDays} onChange={(e) => onSyncDaysChange(Number(e.target.value))}>
+              <option value={7}>{t('last_x_days', { days: 7 })}</option>
+              <option value={14}>{t('last_x_days', { days: 14 })}</option>
+              <option value={30}>{t('last_x_days', { days: 30 })}</option>
+            </select>
             <button 
               onClick={onSync} 
               disabled={isSyncing}

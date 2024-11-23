@@ -33,6 +33,7 @@ function App() {
 
   const [newNoteContent, setNewNoteContent] = useState('');
   const [addingNote, setAddingNote] = useState(false);
+  const [syncDays, setSyncDays] = useState(7); // 新增状态，默认选择最近7天
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -104,9 +105,13 @@ function App() {
     setIsSyncing(true);
     setSyncMessage(null);
     try {
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - syncDays); // 根据选择的天数计算开始日期
+
       const syncRequest: SyncRequest = {
-        from_timestamp: `${dateRange.startDate}T00:00:00Z`,
-        to_timestamp: `${dateRange.endDate}T23:59:59Z`,
+        from_timestamp: `${startDate.toISOString().split('T')[0]}T00:00:00Z`,
+        to_timestamp: `${endDate.toISOString().split('T')[0]}T23:59:59Z`,
         notes: notes
       };
       const response = await ApiService.syncNotes(syncRequest);
@@ -214,6 +219,10 @@ function App() {
     i18n.changeLanguage(lng);
   };
 
+  const handleSyncDaysChange = (days: number) => {
+    setSyncDays(days);
+  };
+
   return (
     <div>
       <Toolbar 
@@ -228,6 +237,8 @@ function App() {
         onSortChange={handleSortChange}
         changeLang={changeLanguage}
         t={t}
+        syncDays={syncDays}
+        onSyncDaysChange={handleSyncDaysChange}
       />
       
       {errorMessage && <div className="toast">{errorMessage}</div>}
