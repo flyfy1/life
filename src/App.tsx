@@ -5,9 +5,9 @@ import { DatabaseService } from './services/db';
 import { formatDateTime, formatRelativeTime } from './utils/dateFormat';
 import ReactMarkdown from 'react-markdown';
 import { Toolbar } from './components/Toolbar';
+import './styles/homepage.css';
 import './styles/notes.css';
 import './styles/toolbar.css';
-import './styles/login.css';
 import { generateUUID } from './utils/uuid'; // 导入 generateUUID 函数
 import { useTranslation } from 'react-i18next'; // 引入 useTranslation
 import i18n from './i18n'; // 导入 i18n 配置
@@ -276,7 +276,7 @@ function App() {
       ) : (
         <div className="notes-container">
           <div className="flex justify-between items-center">
-            <h1>{t('my_notes')}</h1>
+            <h1 className='site-title'>{t('my_notes')}</h1>
             <button 
               onClick={handleAddNote}
               className="edit-button"

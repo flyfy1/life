@@ -37,7 +37,7 @@ export function Toolbar({
   onSyncDaysChange
 }: ToolbarProps) {
   return (
-    <div className="fixed top-0 left-0 right-0 h-12 bg-gray-200 border-b border-gray-300 flex items-center px-4 gap-2 z-50">
+    <div className="toolbar flex items-center px-4 gap-2">
       {isLoggedIn ? (
         <>
           <div className="flex items-center gap-2">

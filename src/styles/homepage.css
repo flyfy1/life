@@ -1,0 +1,6 @@
+.site-title {
+  @apply text-4xl font-bold my-6 text-gray-900;
+  text-align: center;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+} 
