@@ -45,13 +45,13 @@ pnpm run deploy
 ```bash
 git clone [project-url]
 cd [project-directory]
-npm install
+pnpm install
 ```
 
 2. Start the development server:
 
 ```bash
-npm start
+pnpm start
 ```
 
 The application will run at http://localhost:3000
@@ -110,10 +110,10 @@ Built files will be generated in the `build` directory, ready for deployment to 
 ### Available Commands
 
 ```bash
-npm start      # Start development server
-npm test      # Run tests
-npm run build  # Build for production
-npm run eject  # Eject configuration files
+pnpm start      # Start development server
+pnpm test      # Run tests
+pnpm run build  # Build for production
+pnpm run eject  # Eject configuration files
 ```
 
 ### Code Standards
