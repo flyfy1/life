@@ -8,7 +8,9 @@ self.addEventListener('install', (event) => {
         '/static/js/main.js',
         '/static/css/main.css',
         // 添加其他需要缓存的资源
-      ]);
+      ]).catch((error) => {
+        console.error('缓存失败:', error); // 记录失败的请求
+      });
     })
   );
 });
