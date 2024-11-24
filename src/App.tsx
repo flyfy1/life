@@ -106,12 +106,13 @@ function App() {
       }
 
       await loadLocalNotes();
-      dispatch({ type: 'SET_SYNC_MESSAGE', payload: '同步成功' });
+      dispatch({ type: 'SET_SYNC_MESSAGE', payload: t('sync.success') });
     } catch (error) {
-      dispatch({ type: 'SET_SYNC_MESSAGE', payload: '同步失败，请稍后重试' });
+      dispatch({ type: 'SET_SYNC_MESSAGE', payload: t('sync.failed') });
       console.error('同步失败:', error);
     } finally {
       dispatch({ type: 'SET_SYNCING', payload: false });
+      // TODO: clear toast的逻辑，应该单独放
       setTimeout(() => dispatch({ type: 'SET_SYNC_MESSAGE', payload: null }), 3000);
     }
   };
@@ -175,6 +176,7 @@ function App() {
       {state.errorMessage && <div className="toast">{state.errorMessage}</div>}
 
       {!state.isLoggedIn ? (
+        // TODO: 把 Login状态单独拿出来处理
         <div className="flex flex-col items-center justify-center min-h-screen p-5 bg-gray-100">
           <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
             <h2 className="text-center text-gray-800 text-2xl mb-5">{t('login')}到笔记</h2>

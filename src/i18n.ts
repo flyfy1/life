@@ -24,6 +24,9 @@ const translations: KeyTranslations = translate([
     ["edit", "Edit", "编辑"],
     ["login", "Login", "登录"],
     ["sync", "Sync Notes", "同步笔记"],
+    ["sync.success", "Sync success", "同步成功"],
+    ["sync.failure", "Sync failed. please try again later", "同步失败，请稍后重试"],
+
     ["logout", "Logout", "退出登录"],
     ["add_note", "Add Note", "添加笔记"],
 
