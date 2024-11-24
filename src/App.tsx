@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Note, SyncRequest, SortOption } from './types';
 import { ApiService } from './services/api';
 import { DatabaseService } from './services/db';
@@ -8,39 +8,20 @@ import { Toolbar } from './components/Toolbar';
 import './styles/homepage.css';
 import './styles/notes.css';
 import './styles/toolbar.css';
-import { generateUUID } from './utils/uuid'; // 导入 generateUUID 函数
-import { useTranslation } from 'react-i18next'; // 引入 useTranslation
-import i18n from './i18n'; // 导入 i18n 配置
+import { generateUUID } from './utils/uuid';
+import { useTranslation } from 'react-i18next';
+import i18n from './i18n';
+import { useNoteContext } from './context/NoteContext';
 
 function App() {
-  const { t } = useTranslation(); // 获取翻译函数
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [syncMessage, setSyncMessage] = useState<string | null>(null);
-  const [dateRange, setDateRange] = useState<{ startDate: string; endDate: string }>({
-    startDate: '', // 初始为空，等待笔记加载后更新
-    endDate: ''
-  });
-  const [sortOption, setSortOption] = useState<SortOption>({
-    field: 'ctime',
-    direction: 'desc'
-  });
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [editingNote, setEditingNote] = useState<Note | null>(null);
-
-  const [newNoteContent, setNewNoteContent] = useState('');
-  const [addingNote, setAddingNote] = useState(false);
-  const [syncDays, setSyncDays] = useState(7); // 新增状态，默认选择最近7天
-
-  const newNoteInputRef = useRef<HTMLTextAreaElement | null>(null); // 创建 ref
+  const { t } = useTranslation();
+  const { state, dispatch } = useNoteContext();
+  const newNoteInputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      setIsLoggedIn(true);
+      dispatch({ type: 'LOGIN' });
       initializeApp();
     }
   }, []);
@@ -53,44 +34,43 @@ function App() {
   const loadLocalNotes = async () => {
     const localNotes = await DatabaseService.getAllNotes();
     const sortedNotes = sortNotes(localNotes);
-    setNotes(sortedNotes);
-    
+    dispatch({ type: 'SET_NOTES', payload: sortedNotes });
+
     if (sortedNotes.length > 0) {
       const dates = sortedNotes.map(note => note.ctime.split('T')[0]);
-      setDateRange({
+      dispatch({ type: 'SET_DATE_RANGE', payload: {
         startDate: dates[dates.length - 1],
         endDate: dates[0]
-      });
+      }});
     } else {
       const today = new Date().toISOString().split('T')[0];
-      setDateRange({
+      dispatch({ type: 'SET_DATE_RANGE', payload: {
         startDate: today,
         endDate: today
-      });
+      }});
     }
   };
 
   const sortNotes = (notesToSort: Note[]) => {
     return [...notesToSort].sort((a, b) => {
-      const timeA = new Date(a[sortOption.field]).getTime();
-      const timeB = new Date(b[sortOption.field]).getTime();
-      return sortOption.direction === 'desc' ? timeB - timeA : timeA - timeB;
+      const timeA = new Date(a[state.sortOption.field]).getTime();
+      const timeB = new Date(b[state.sortOption.field]).getTime();
+      return state.sortOption.direction === 'desc' ? timeB - timeA : timeA - timeB;
     });
   };
 
   const handleSortChange = (newSortOption: SortOption) => {
-    setSortOption(newSortOption);
-    setNotes(sortNotes(notes));
+    dispatch({ type: 'SET_SORT_OPTION', payload: newSortOption });
+    dispatch({ type: 'SET_NOTES', payload: sortNotes(state.notes) });
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    setIsLoggedIn(false);
-    setNotes([]);
+    dispatch({ type: 'LOGOUT' });
   };
 
   const handleDateRangeChange = (newRange: { startDate: string; endDate: string }) => {
-    setDateRange(newRange);
+    dispatch({ type: 'SET_DATE_RANGE', payload: newRange });
     filterNotesByDateRange(newRange);
   };
 
@@ -100,125 +80,68 @@ function App() {
       const noteDate = note.ctime.split('T')[0];
       return noteDate >= range.startDate && noteDate <= range.endDate;
     });
-    setNotes(sortNotes(filteredNotes));
+    dispatch({ type: 'SET_NOTES', payload: sortNotes(filteredNotes) });
   };
 
   const handleManualSync = async () => {
-    setIsSyncing(true);
-    setSyncMessage(null);
+    dispatch({ type: 'SET_SYNCING', payload: true });
+    dispatch({ type: 'SET_SYNC_MESSAGE', payload: null });
     try {
       const endDate = new Date();
       const startDate = new Date();
-      startDate.setDate(endDate.getDate() - syncDays); // 根据选择的天计算开始日期
+      startDate.setDate(endDate.getDate() - state.syncDays);
 
       const syncRequest: SyncRequest = {
         from_timestamp: `${startDate.toISOString().split('T')[0]}T00:00:00Z`,
         to_timestamp: `${endDate.toISOString().split('T')[0]}T23:59:59Z`,
-        notes: notes
+        notes: state.notes
       };
       const response = await ApiService.syncNotes(syncRequest);
-      
-      // 保存服务器上较新的笔记
+
       const server_newer = response.server_newer || [];
       const only_on_server = response.only_on_server || [];
-      
-      // 将两种笔记都保存到 IndexedDB
+
       for (const note of [...server_newer, ...only_on_server]) {
         await DatabaseService.saveNote(note);
       }
-      
-      // 重新加载本地笔记
+
       await loadLocalNotes();
-      
-      setSyncMessage('同步成功');
+      dispatch({ type: 'SET_SYNC_MESSAGE', payload: '同步成功' });
     } catch (error) {
-      setSyncMessage('同步失败，请稍后重试');
+      dispatch({ type: 'SET_SYNC_MESSAGE', payload: '同步失败，请稍后重试' });
       console.error('同步失败:', error);
     } finally {
-      setIsSyncing(false);
-      setTimeout(() => setSyncMessage(null), 3000);
+      dispatch({ type: 'SET_SYNCING', payload: false });
+      setTimeout(() => dispatch({ type: 'SET_SYNC_MESSAGE', payload: null }), 3000);
     }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await ApiService.login({ username, password });
+      const response = await ApiService.login({ username: state.username, password: state.password });
       localStorage.setItem('token', response.token);
-      setIsLoggedIn(true);
+      dispatch({ type: 'LOGIN' });
       await initializeApp();
-      setErrorMessage(null);
+      dispatch({ type: 'SET_ERROR_MESSAGE', payload: null });
     } catch (error) {
       console.error('登录失败:', error);
-      setErrorMessage('登录失败，请检查您的用户名和密码。');
+      dispatch({ type: 'SET_ERROR_MESSAGE', payload: '登录失败，请检查您的用户名和密码。' });
     }
   };
 
-  const syncNotes = async () => {
-    const lastSync = await DatabaseService.getLastSync();
-    const localNotes = await DatabaseService.getAllNotes();
-    
-    const syncResponse = await ApiService.syncNotes({
-      from_timestamp: lastSync?.timestamp || new Date(0).toISOString(),
-      to_timestamp: new Date().toISOString(),
-      notes: localNotes,
-    });
-
-    // 处理同步响应
-    const server_newer = syncResponse.server_newer || [];
-    const only_on_server = syncResponse.only_on_server || [];
-    for (const note of [...server_newer, ...only_on_server]) {
-      await DatabaseService.saveNote(note);
-    }
-
-    await DatabaseService.setLastSync(syncResponse.to_timestamp);
-    const updatedNotes = await DatabaseService.getAllNotes();
-    setNotes(updatedNotes);
-  };
-
-  const startPeriodicSync = () => {
-    setInterval(syncNotes, 5 * 60 * 1000); // 每5分钟同步一次
-  };
-
-  const handleEditNote = (note: Note) => {
-    setEditingNote(note);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingNote(null);
-  };
-
-  const handleSaveNote = async (updatedNote: Note) => {
-    updatedNote.mtime = new Date().toISOString(); // 更新修改时间
-    await DatabaseService.saveNote(updatedNote);
-    setEditingNote(null);
-    await loadLocalNotes(); // 重新加载笔记
-  };
-
-  const handleCancelAdd = async () => {
-    setAddingNote(false);
-  }
   const handleAddNote = async () => {
-    setAddingNote(true); // 先更新状态
-    setTimeout(() => {
-      if (newNoteInputRef.current) {
-        newNoteInputRef.current.focus(); // 然后设置焦点
-      }
-    }, 0); // 立即执行
-  };
-  const handleConfirmAdd = async () => {
-    if (newNoteContent.trim()) {
+    if (state.newNoteContent.trim()) {
       const newNote: Note = {
-        id: Date.now(), // 或者使用其他唯一标识符
-        uuid: generateUUID(), // 使用 generateUUID 生成 UUID
+        id: Date.now(),
+        uuid: generateUUID(),
         ctime: new Date().toISOString(),
         mtime: new Date().toISOString(),
-        content: newNoteContent,
+        content: state.newNoteContent,
       };
       await DatabaseService.saveNote(newNote);
-      setNewNoteContent(''); // 清空输入框
-      setAddingNote(false);
-      await loadLocalNotes(); // 重新加载笔记
+      dispatch({ type: 'SET_NEW_NOTE_CONTENT', payload: '' });
+      await loadLocalNotes();
     }
   };
 
@@ -227,31 +150,31 @@ function App() {
   };
 
   const handleSyncDaysChange = (days: number) => {
-    setSyncDays(days);
+    dispatch({ type: 'SET_SYNC_DAYS', payload: days });
   };
 
   return (
     <div>
       <Toolbar 
-        isLoggedIn={isLoggedIn}
+        isLoggedIn={state.isLoggedIn}
         onSync={handleManualSync}
         onLogout={handleLogout}
-        isSyncing={isSyncing}
-        syncMessage={syncMessage}
-        dateRange={dateRange}
+        isSyncing={state.isSyncing}
+        syncMessage={state.syncMessage}
+        dateRange={state.dateRange}
         onDateRangeChange={handleDateRangeChange}
-        sortOption={sortOption}
+        sortOption={state.sortOption}
         onSortChange={handleSortChange}
         changeLang={changeLanguage}
         t={t}
-        syncDays={syncDays}
+        syncDays={state.syncDays}
         onSyncDaysChange={handleSyncDaysChange}
         onAddNote={handleAddNote}
       />
       
-      {errorMessage && <div className="toast">{errorMessage}</div>}
+      {state.errorMessage && <div className="toast">{state.errorMessage}</div>}
 
-      {!isLoggedIn ? (
+      {!state.isLoggedIn ? (
         <div className="flex flex-col items-center justify-center min-h-screen p-5 bg-gray-100">
           <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
             <h2 className="text-center text-gray-800 text-2xl mb-5">{t('login')}到笔记</h2>
@@ -259,16 +182,16 @@ function App() {
               <input
                 type="text"
                 placeholder={t('username')}
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={state.username}
+                onChange={(e) => dispatch({ type: 'SET_USERNAME', payload: e.target.value })}
                 required
                 className="p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               />
               <input
                 type="password"
                 placeholder={t('password')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={state.password}
+                onChange={(e) => dispatch({ type: 'SET_PASSWORD', payload: e.target.value })}
                 required
                 className="p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               />
@@ -287,32 +210,7 @@ function App() {
             <h1 className='site-title'>{t('my_notes')}</h1>
           </div>
 
-          {addingNote && (
-            <div>
-              <div>
-              <textarea
-                ref={newNoteInputRef} // 绑定 ref
-                value={newNoteContent}
-                onChange={(e) => setNewNoteContent(e.target.value)}
-                placeholder="输入新笔记内容..."
-              />
-              </div>
-              <button 
-                onClick={handleConfirmAdd} 
-                className="edit-button"
-              >
-                {t('save')}
-              </button>
-              <button 
-                onClick={handleCancelAdd} 
-                className="cancel-button"
-              >
-                {t('cancel')}
-              </button>
-            </div>
-          )}
-
-          {notes.map(note => (
+          {state.notes.map(note => (
             <article key={note.uuid} className="note-article">
               <header className="note-header">
                 <h1>{formatDateTime(note.ctime)}</h1>
@@ -320,37 +218,9 @@ function App() {
                   <span>更新于: {formatRelativeTime(note.mtime)}</span>
                 </div>
               </header>
-              
-              {editingNote?.uuid === note.uuid ? (
-                <div>
-                  <textarea
-                    value={editingNote.content}
-                    onChange={(e) => setEditingNote({ ...editingNote, content: e.target.value })}
-                  />
-                  <button 
-                    onClick={() => handleSaveNote(editingNote)} 
-                    className="edit-button"
-                  >
-                    {t('save')}
-                  </button>
-                  <button 
-                    onClick={handleCancelEdit} 
-                    className="edit-button"
-                  >
-                    {t('cancel')}
-                  </button>
-                </div>
-              ) : (
-                <section className="note-markdown-content">
-                  <ReactMarkdown>{note.content}</ReactMarkdown>
-                  <button 
-                    onClick={() => handleEditNote(note)} 
-                    className="edit-button"
-                  >
-                    {t('edit')}
-                  </button>
-                </section>
-              )}
+              <section className="note-markdown-content">
+                <ReactMarkdown>{note.content}</ReactMarkdown>
+              </section>
             </article>
           ))}
         </div>
