@@ -239,7 +239,7 @@ function App() {
                   value={newNoteContent}
                   onChange={(e) => setNewNoteContent(e.target.value)}
                   placeholder={t('add_note')}
-                  className="note-input"
+                  className="note-editor"
                 />
                 <div>
                   <button
@@ -269,6 +269,7 @@ function App() {
               {editingNote?.uuid === note.uuid ? (
                 <div>
                   <textarea
+                    className='note-editor'
                     value={editingNote.content}
                     onChange={(e) => setEditingNote({ ...editingNote, content: e.target.value })}
                   />
@@ -280,7 +281,7 @@ function App() {
                   </button>
                   <button 
                     onClick={handleCancelEdit} 
-                    className="edit-button"
+                    className="cancel-button"
                   >
                     {t('cancel')}
                   </button>
