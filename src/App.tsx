@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Note, SyncRequest, SortOption } from './types';
 import { ApiService } from './services/api';
 import { DatabaseService } from './services/db';
@@ -9,6 +9,7 @@ import './styles/homepage.css';
 import './styles/notes.css';
 import './styles/toolbar.css';
 import { generateUUID } from './utils/uuid';
+import { sortNotes } from './utils/note';
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
 import { useNoteContext } from './context/NoteContext';
@@ -31,9 +32,12 @@ function App() {
     await loadLocalNotes();
   };
 
+  const sortDirection = state.sortOption.direction
+  const sortField = state.sortOption.field
+
   const loadLocalNotes = async () => {
     const localNotes = await DatabaseService.getAllNotes();
-    const sortedNotes = sortNotes(localNotes);
+    const sortedNotes = sortNotes(sortField, sortDirection, localNotes);
     dispatch({ type: 'SET_NOTES', payload: sortedNotes });
 
     if (sortedNotes.length > 0) {
@@ -51,17 +55,9 @@ function App() {
     }
   };
 
-  const sortNotes = (notesToSort: Note[]) => {
-    return [...notesToSort].sort((a, b) => {
-      const timeA = new Date(a[state.sortOption.field]).getTime();
-      const timeB = new Date(b[state.sortOption.field]).getTime();
-      return state.sortOption.direction === 'desc' ? timeB - timeA : timeA - timeB;
-    });
-  };
-
   const handleSortChange = (newSortOption: SortOption) => {
     dispatch({ type: 'SET_SORT_OPTION', payload: newSortOption });
-    dispatch({ type: 'SET_NOTES', payload: sortNotes(state.notes) });
+    dispatch({ type: 'SET_NOTES', payload: sortNotes(sortField, sortDirection, state.notes) });
   };
 
   const handleLogout = () => {
@@ -80,7 +76,7 @@ function App() {
       const noteDate = note.ctime.split('T')[0];
       return noteDate >= range.startDate && noteDate <= range.endDate;
     });
-    dispatch({ type: 'SET_NOTES', payload: sortNotes(filteredNotes) });
+    dispatch({ type: 'SET_NOTES', payload: sortNotes(sortField, sortDirection, filteredNotes) });
   };
 
   const handleManualSync = async () => {
@@ -132,16 +128,18 @@ function App() {
   };
 
   const handleAddNote = async () => {
-    if (state.newNoteContent.trim()) {
+    if (newNoteContent.trim()) {
       const newNote: Note = {
         id: Date.now(),
         uuid: generateUUID(),
         ctime: new Date().toISOString(),
         mtime: new Date().toISOString(),
-        content: state.newNoteContent,
+        content: newNoteContent,
       };
       await DatabaseService.saveNote(newNote);
-      dispatch({ type: 'SET_NEW_NOTE_CONTENT', payload: '' });
+      dispatch({ type: 'SET_ADDING_NOTE', payload: false });
+      setNewNoteContent("")
+
       await loadLocalNotes();
     }
   };
@@ -153,6 +151,8 @@ function App() {
   const handleSyncDaysChange = (days: number) => {
     dispatch({ type: 'SET_SYNC_DAYS', payload: days });
   };
+
+  const [newNoteContent, setNewNoteContent] = useState('');
 
   return (
     <div>
@@ -170,7 +170,6 @@ function App() {
         t={t}
         syncDays={state.syncDays}
         onSyncDaysChange={handleSyncDaysChange}
-        onAddNote={handleAddNote}
       />
       
       {state.errorMessage && <div className="toast">{state.errorMessage}</div>}
@@ -211,6 +210,22 @@ function App() {
           <div className="flex justify-between items-center">
             <h1 className='site-title'>{t('my_notes')}</h1>
           </div>
+
+          {state.addingNote ? // 在返回的 JSX 中添加输入框和按钮
+<div className="add-note-container">
+  <textarea
+    value={newNoteContent}
+    onChange={(e) => setNewNoteContent(e.target.value)}
+    placeholder={t('add_note')}
+    className="note-input"
+  />
+  <button
+    onClick={handleAddNote}
+    className="add-note-button"
+  >
+    {t('add_note')}
+  </button>
+</div>: ""}
 
           {state.notes.map(note => (
             <article key={note.uuid} className="note-article">

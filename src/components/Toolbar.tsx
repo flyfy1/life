@@ -1,6 +1,11 @@
 import React from 'react';
 import { SortField, SortDirection, SortOption } from '../types/index';
 import { TFunction } from 'i18next';
+import { useNoteContext } from '../context/NoteContext';
+import { Note, SyncRequest } from '../types';
+import { generateUUID } from '../utils/uuid';
+import { sortNotes } from '../utils/note';
+import { DatabaseService } from '../services/db';
 
 interface ToolbarProps {
   isLoggedIn: boolean;
@@ -19,7 +24,6 @@ interface ToolbarProps {
   t: TFunction;
   syncDays: number;
   onSyncDaysChange: (days: number) => void;
-  onAddNote: () => void;
 }
 
 export function Toolbar({ 
@@ -36,8 +40,37 @@ export function Toolbar({
   t,
   syncDays,
   onSyncDaysChange,
-  onAddNote
 }: ToolbarProps) {
+  const { state, dispatch } = useNoteContext();
+
+  const sortDirection = state.sortOption.direction
+  const sortField = state.sortOption.field
+
+  // TODO: move this logic into reducer
+  const loadLocalNotes = async () => {
+    const localNotes = await DatabaseService.getAllNotes();
+    const sortedNotes = sortNotes(sortField, sortDirection, localNotes);
+    dispatch({ type: 'SET_NOTES', payload: sortedNotes });
+
+    if (sortedNotes.length > 0) {
+      const dates = sortedNotes.map(note => note.ctime.split('T')[0]);
+      dispatch({ type: 'SET_DATE_RANGE', payload: {
+        startDate: dates[dates.length - 1],
+        endDate: dates[0]
+      }});
+    } else {
+      const today = new Date().toISOString().split('T')[0];
+      dispatch({ type: 'SET_DATE_RANGE', payload: {
+        startDate: today,
+        endDate: today
+      }});
+    }
+  };
+
+  const onAddNote = async () => {
+    dispatch({type: 'SET_ADDING_NOTE', payload: true})
+  }
+
   return (
     <div className="toolbar flex items-center px-4 gap-2">
       {isLoggedIn ? (

@@ -13,7 +13,6 @@ const initialState: State = {
   sortOption: { field: 'ctime', direction: 'desc' },
   errorMessage: null,
   editingNote: null,
-  newNoteContent: '',
   addingNote: false,
   syncDays: 7,
 };
@@ -76,8 +75,6 @@ const noteReducer = (state: State, action: Action): State => {
     case 'SET_EDITING_NOTE':
       return { ...state, editingNote: action.payload };
 
-    case 'SET_NEW_NOTE_CONTENT':
-      return { ...state, newNoteContent: action.payload };
     case 'SET_ADDING_NOTE':
       return { ...state, addingNote: action.payload };
 

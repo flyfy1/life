@@ -19,8 +19,6 @@ export interface State {
   // 全局的error message
   errorMessage: string | null;
 
-  newNoteContent: string;
-
   // TODO: remove
   syncDays: number;
 }
@@ -38,6 +36,5 @@ export type Action =
   | { type: 'SET_SORT_OPTION'; payload: SortOption }
   | { type: 'SET_ERROR_MESSAGE'; payload: string | null }
   | { type: 'SET_EDITING_NOTE'; payload: Note | null }
-  | { type: 'SET_NEW_NOTE_CONTENT'; payload: string }
   | { type: 'SET_ADDING_NOTE'; payload: boolean }
   | { type: 'SET_SYNC_DAYS'; payload: number };
