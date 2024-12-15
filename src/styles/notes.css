@@ -49,9 +49,21 @@
   cursor: pointer;
   transition: background-color 0.3s;
 }
-
 .edit-button:hover {
   background-color: #0056b3;
+}
+
+.cancel-button {
+  background-color: #c3c3c3;
+  color: black;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.cancel-button:hover {
+  background-color: #cdcdcd;
 }
 
 .note-markdown-content h1 {

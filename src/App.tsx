@@ -127,6 +127,10 @@ function App() {
     }
   };
 
+  const cancelAddNote = async () => {
+    dispatch({ type: 'SET_ADDING_NOTE', payload: false });
+  }
+
   const handleAddNote = async () => {
     if (newNoteContent.trim()) {
       const newNote: Note = {
@@ -211,21 +215,29 @@ function App() {
             <h1 className='site-title'>{t('my_notes')}</h1>
           </div>
 
-          {state.addingNote ? // 在返回的 JSX 中添加输入框和按钮
-<div className="add-note-container">
-  <textarea
-    value={newNoteContent}
-    onChange={(e) => setNewNoteContent(e.target.value)}
-    placeholder={t('add_note')}
-    className="note-input"
-  />
-  <button
-    onClick={handleAddNote}
-    className="add-note-button"
-  >
-    {t('add_note')}
-  </button>
-</div>: ""}
+            {state.addingNote ? // 在返回的 JSX 中添加输入框和按钮
+              <div className="add-note-container">
+                <textarea
+                  value={newNoteContent}
+                  onChange={(e) => setNewNoteContent(e.target.value)}
+                  placeholder={t('add_note')}
+                  className="note-input"
+                />
+                <div>
+                  <button
+                    onClick={handleAddNote}
+                    className="edit-button"
+                  >
+                    {t('add_note')}
+                  </button>
+                  <button
+                    onClick={cancelAddNote}
+                    className="cancel-button"
+                  >
+                    {t('cancel')}
+                  </button>
+                </div>
+              </div> : ""}
 
           {state.notes.map(note => (
             <article key={note.uuid} className="note-article">
