@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext, ReactNode } from 'react';
 import { Note, SortOption } from '../types';
-import { State, Action } from './types';
+import { State, Action, ActionTypes } from './types';
 
 const initialState: State = {
   isLoggedIn: false,
@@ -48,37 +48,31 @@ export const useNoteContext = () => {
 
 const noteReducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'LOGIN':
+    case ActionTypes.LOGIN:
       return { ...state, isLoggedIn: true };
-    case 'LOGOUT':
+    case ActionTypes.LOGOUT:
       return { ...state, isLoggedIn: false, notes: [] };
-    case 'SET_USERNAME':
+    case ActionTypes.SET_USERNAME:
       return { ...state, username: action.payload };
-    case 'SET_PASSWORD':
+    case ActionTypes.SET_PASSWORD:
       return { ...state, password: action.payload };
-
-      // general info
-    case 'SET_ERROR_MESSAGE':
+    case ActionTypes.SET_ERROR_MESSAGE:
       return { ...state, errorMessage: action.payload };
-
-    case 'SET_NOTES':
+    case ActionTypes.SET_NOTES:
       return { ...state, notes: action.payload };
-    case 'SET_SYNCING':
+    case ActionTypes.SET_SYNCING:
       return { ...state, isSyncing: action.payload };
-    case 'SET_SYNC_MESSAGE':
+    case ActionTypes.SET_SYNC_MESSAGE:
       return { ...state, syncMessage: action.payload };
-    case 'SET_DATE_RANGE':
+    case ActionTypes.SET_DATE_RANGE:
       return { ...state, dateRange: action.payload };
-    case 'SET_SORT_OPTION':
+    case ActionTypes.SET_SORT_OPTION:
       return { ...state, sortOption: action.payload };
-
-    case 'SET_EDITING_NOTE':
+    case ActionTypes.SET_EDITING_NOTE:
       return { ...state, editingNote: action.payload };
-
-    case 'SET_ADDING_NOTE':
+    case ActionTypes.SET_ADDING_NOTE:
       return { ...state, addingNote: action.payload };
-
-    case 'SET_SYNC_DAYS':
+    case ActionTypes.SET_SYNC_DAYS:
       return { ...state, syncDays: action.payload };
     default:
       return state;
