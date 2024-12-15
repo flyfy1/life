@@ -53,12 +53,17 @@ const noteReducer = (state: State, action: Action): State => {
       return { ...state, isLoggedIn: true };
     case 'LOGOUT':
       return { ...state, isLoggedIn: false, notes: [] };
-    case 'SET_NOTES':
-      return { ...state, notes: action.payload };
     case 'SET_USERNAME':
       return { ...state, username: action.payload };
     case 'SET_PASSWORD':
       return { ...state, password: action.payload };
+
+      // general info
+    case 'SET_ERROR_MESSAGE':
+      return { ...state, errorMessage: action.payload };
+
+    case 'SET_NOTES':
+      return { ...state, notes: action.payload };
     case 'SET_SYNCING':
       return { ...state, isSyncing: action.payload };
     case 'SET_SYNC_MESSAGE':
@@ -68,8 +73,6 @@ const noteReducer = (state: State, action: Action): State => {
     case 'SET_SORT_OPTION':
       return { ...state, sortOption: action.payload };
 
-    case 'SET_ERROR_MESSAGE':
-      return { ...state, errorMessage: action.payload };
     case 'SET_EDITING_NOTE':
       return { ...state, editingNote: action.payload };
 
