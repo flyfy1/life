@@ -13,6 +13,7 @@ import { sortNotes } from './utils/note';
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
 import { useNoteContext } from './context/NoteContext';
+import { nodeModuleNameResolver } from 'typescript';
 
 function App() {
   const { t } = useTranslation();
@@ -158,6 +159,23 @@ function App() {
 
   const [newNoteContent, setNewNoteContent] = useState('');
 
+  const editingNote = state.editingNote;
+  const setEditingNote = (note: Note|null) => {
+    dispatch({type: 'SET_EDITING_NOTE', payload: note})
+  };
+  const handleCancelEdit = () => {
+    setEditingNote(null)
+  };
+  const handleEditNote = async (note: Note) => {
+    setEditingNote(note)
+  }
+  const handleSaveNote = async (updatedNote: Note) => {
+    updatedNote.mtime = new Date().toISOString(); // 更新修改时间
+    await DatabaseService.saveNote(updatedNote);
+    setEditingNote(null);
+    await loadLocalNotes(); // 重新加载笔记
+  };
+
   return (
     <div>
       <Toolbar 
@@ -247,9 +265,39 @@ function App() {
                   <span>更新于: {formatRelativeTime(note.mtime)}</span>
                 </div>
               </header>
-              <section className="note-markdown-content">
-                <ReactMarkdown>{note.content}</ReactMarkdown>
-              </section>
+
+              {editingNote?.uuid === note.uuid ? (
+                <div>
+                  <textarea
+                    value={editingNote.content}
+                    onChange={(e) => setEditingNote({ ...editingNote, content: e.target.value })}
+                  />
+                  <button 
+                    onClick={() => handleSaveNote(editingNote)} 
+                    className="edit-button"
+                  >
+                    {t('save')}
+                  </button>
+                  <button 
+                    onClick={handleCancelEdit} 
+                    className="edit-button"
+                  >
+                    {t('cancel')}
+                  </button>
+                </div>
+              ) : (
+                <div>
+                <section className="note-markdown-content">
+                  <ReactMarkdown>{note.content}</ReactMarkdown>
+                </section>
+                  <button 
+                    onClick={() => handleEditNote(note)} 
+                    className="edit-button"
+                  >
+                    {t('edit')}
+                  </button>
+                </div>
+              )}
             </article>
           ))}
         </div>
