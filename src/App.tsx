@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Note, SyncRequest, SortOption } from './types';
+import { Note, SyncRequest } from './types';
 import { ApiService } from './services/api';
 import { DatabaseService } from './services/db';
 import { formatDateTime, formatRelativeTime } from './utils/dateFormat';
@@ -12,7 +12,6 @@ import './styles/toast.css';
 import { generateUUID } from './utils/uuid';
 import { sortNotes } from './utils/note';
 import { useTranslation } from 'react-i18next';
-import i18n from './i18n';
 import { useNoteContext } from './context/NoteContext';
 import ToastContainer from './components/ToastContainer';
 
@@ -34,51 +33,24 @@ function App() {
     await loadLocalNotes();
   };
 
-  const sortDirection = state.sortOption.direction
-  const sortField = state.sortOption.field
-
   const loadLocalNotes = async () => {
     const localNotes = await DatabaseService.getAllNotes();
-    const sortedNotes = sortNotes(sortField, sortDirection, localNotes);
+    const sortedNotes = sortNotes(state.sortOption, localNotes);
     dispatch({ type: 'SET_NOTES', payload: sortedNotes });
 
+    const today = new Date().toISOString().split('T')[0];
     if (sortedNotes.length > 0) {
       const dates = sortedNotes.map(note => note.ctime.split('T')[0]);
       dispatch({ type: 'SET_DATE_RANGE', payload: {
         startDate: dates[dates.length - 1],
-        endDate: dates[0]
+        endDate: today
       }});
     } else {
-      const today = new Date().toISOString().split('T')[0];
       dispatch({ type: 'SET_DATE_RANGE', payload: {
         startDate: today,
         endDate: today
       }});
     }
-  };
-
-  const handleSortChange = (newSortOption: SortOption) => {
-    dispatch({ type: 'SET_SORT_OPTION', payload: newSortOption });
-    dispatch({ type: 'SET_NOTES', payload: sortNotes(sortField, sortDirection, state.notes) });
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    dispatch({ type: 'LOGOUT' });
-  };
-
-  const handleDateRangeChange = (newRange: { startDate: string; endDate: string }) => {
-    dispatch({ type: 'SET_DATE_RANGE', payload: newRange });
-    filterNotesByDateRange(newRange);
-  };
-
-  const filterNotesByDateRange = async (range: { startDate: string; endDate: string }) => {
-    const allNotes = await DatabaseService.getAllNotes();
-    const filteredNotes = allNotes.filter(note => {
-      const noteDate = note.ctime.split('T')[0];
-      return noteDate >= range.startDate && noteDate <= range.endDate;
-    });
-    dispatch({ type: 'SET_NOTES', payload: sortNotes(sortField, sortDirection, filteredNotes) });
   };
 
   const handleManualSync = async () => {
@@ -132,10 +104,11 @@ function App() {
       }
       localStorage.setItem('token', response.token);
       dispatch({ type: 'LOGIN' });
-      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.succeeded'), color: "red" } });
+      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.succeeded'), color: "green" } });
       await initializeApp();
       
       // 登录后自动同步最近7天的笔记
+      // TODO: 这个同步目前还有点问题：没能把本地的笔记发出去 -- 应该是因为 state还没更新的原因
       await handleManualSync();
     } catch (error) {
       console.error('登录失败:', error);
@@ -164,14 +137,6 @@ function App() {
     }
   };
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-  };
-
-  const handleSyncDaysChange = (days: number) => {
-    dispatch({ type: 'SET_SYNC_DAYS', payload: days });
-  };
-
   const [newNoteContent, setNewNoteContent] = useState('');
 
   const editingNote = state.editingNote;
@@ -194,14 +159,7 @@ function App() {
   return (
     <div>
       <Toolbar 
-        isLoggedIn={state.isLoggedIn}
         onSync={handleManualSync}
-        onLogout={handleLogout}
-        onDateRangeChange={handleDateRangeChange}
-        onSortChange={handleSortChange}
-        changeLang={changeLanguage}
-        t={t}
-        onSyncDaysChange={handleSyncDaysChange}
       />
 
       <ToastContainer />

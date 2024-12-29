@@ -1,9 +1,9 @@
-import { Note } from '../types';
+import { Note, SortOption } from '../types';
 
-export const sortNotes = (sortField: keyof Note, sortDirction: string, notesToSort: Note[]) => {
+export const sortNotes = (sortOption: SortOption, notesToSort: Note[]) => {
     return [...notesToSort].sort((a, b) => {
-        const timeA = new Date(a[sortField] as string).getTime();
-        const timeB = new Date(b[sortField] as string).getTime();
-        return sortDirction === 'desc' ? timeB - timeA : timeA - timeB;
+        const timeA = new Date(a[sortOption.field] as string).getTime();
+        const timeB = new Date(b[sortOption.field] as string).getTime();
+        return sortOption.direction === 'desc' ? timeB - timeA : timeA - timeB;
     });
 };
