@@ -124,17 +124,22 @@ function App() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       const response = await ApiService.login({ username: state.username, password: state.password });
+      if(response.error) {
+        throw(response.error);
+      }
       localStorage.setItem('token', response.token);
       dispatch({ type: 'LOGIN' });
+      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.succeeded'), color: "red" } });
       await initializeApp();
       
       // 登录后自动同步最近7天的笔记
       await handleManualSync();
     } catch (error) {
       console.error('登录失败:', error);
-      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.failed'), color: "yellow" } });
+      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.failed'), color: "red" } });
     }
   };
 
