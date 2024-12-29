@@ -13,7 +13,7 @@ import { generateUUID } from './utils/uuid';
 import { sortNotes } from './utils/note';
 import { useTranslation } from 'react-i18next';
 import { useNoteContext } from './context/NoteContext';
-import ToastContainer from './components/ToastContainer';
+import ToastBox from './components/ToastBox';
 import AddNote from './components/AddNote';
 import Login from './components/Login';
 
@@ -119,7 +119,7 @@ function App() {
         onSync={handleManualSync}
       />
 
-      <ToastContainer />
+      <ToastBox />
 
       {!state.isLoggedIn ?
         <Login successCallback={async () => {

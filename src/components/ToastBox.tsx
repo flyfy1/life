@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNoteContext } from '../context/NoteContext';
 
-const ToastContainer: React.FC = () => {
+const ToastBox: React.FC = () => {
   const { state, dispatch } = useNoteContext();
 
   const addToast = (message: string) => {
@@ -9,6 +9,7 @@ const ToastContainer: React.FC = () => {
     dispatch({ type: 'ADD_TOAST', payload: { id, message } });
 
     setTimeout(() => {
+      console.log("removing toast via ")
       removeToast(id);
     }, 10000); // 10秒后自动关闭
   };
@@ -30,4 +31,4 @@ const ToastContainer: React.FC = () => {
   );
 };
 
-export default ToastContainer;
+export default ToastBox;
