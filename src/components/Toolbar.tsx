@@ -146,18 +146,23 @@ export function Toolbar({
               {isSyncing ? t('syncing') : t('sync_notes')}
             </button>
             <button onClick={handleLogout}>{t('action.logout')}</button>
-            <select onChange={(e) => changeLanguage(e.target.value)} className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
-              <option value="zh">中文</option>
-              <option value="en">English</option>
-            </select>
+            <LanguageSelector changeLanguage={changeLanguage}/>
           </div>
         </>
       ) :  <div className="flex items-center gap-2 ml-auto right-controls">
-            <select onChange={(e) => changeLanguage(e.target.value)} className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
-              <option value="zh">中文</option>
-              <option value="en">English</option>
-            </select>
+            <LanguageSelector changeLanguage={changeLanguage}/>
         </div>}
     </div>
   );
 } 
+
+interface LanguageSelectionProps {
+  changeLanguage: (lng: string) => void; // 指定类型
+}
+
+function LanguageSelector({changeLanguage}: LanguageSelectionProps){
+  return <select onChange={(e) => changeLanguage(e.target.value)} className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+              <option value="zh">中文</option>
+              <option value="en">English</option>
+            </select>
+}
