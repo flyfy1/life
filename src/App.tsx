@@ -13,6 +13,7 @@ import { useNoteContext } from './context/NoteContext';
 import ToastBox from './components/ToastBox';
 import AddNote from './components/AddNote';
 import Login from './components/Login';
+import { editorShortcutListener } from './utils/editor';
 
 function App() {
   const { t } = useTranslation();
@@ -102,12 +103,20 @@ function App() {
   const handleEditNote = async (note: Note) => {
     setEditingNote(note)
   }
-  const handleSaveNote = async (updatedNote: Note) => {
+  const handleSaveNote = async () => {
+    const updatedNote = editingNote
+    if(updatedNote == null) {
+      console.error("unexpected: editingNote is null")
+      return
+    }
+
     updatedNote.mtime = new Date().toISOString(); // 更新修改时间
     await DatabaseService.saveNote(updatedNote);
     setEditingNote(null);
     await loadLocalNotes(); // 重新加载笔记
   };
+
+  const editNoteHandleKeyDown = editorShortcutListener({save: handleSaveNote, cancel: handleCancelEdit})
 
   return (
     <div>
@@ -147,9 +156,10 @@ function App() {
                     className='note-editor'
                     value={editingNote.content}
                     onChange={(e) => setEditingNote({ ...editingNote, content: e.target.value })}
+                    onKeyDown={editNoteHandleKeyDown}
                   />
                   <button 
-                    onClick={() => handleSaveNote(editingNote)} 
+                    onClick={() => handleSaveNote()} 
                     className="edit-button"
                   >
                     {t('action.save')}

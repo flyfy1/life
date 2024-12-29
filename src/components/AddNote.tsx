@@ -4,6 +4,7 @@ import { useNoteContext } from '../context/NoteContext';
 import { DatabaseService } from '../services/db';
 import { generateUUID } from '../utils/uuid';
 import { useTranslation } from 'react-i18next';
+import { editorShortcutListener } from '../utils/editor';
 
 const AddNote: React.FC<{ refreshNotes: () => void }> = ({refreshNotes}) => {
     const { state, dispatch } = useNoteContext();
@@ -13,7 +14,7 @@ const AddNote: React.FC<{ refreshNotes: () => void }> = ({refreshNotes}) => {
     // local state
     const [newNoteContent, setNewNoteContent] = useState('');
 
-    const handleAddNote = async () => {
+    const saveNote = async () => {
         if (newNoteContent.trim()) {
             const newNote: Note = {
                 id: Date.now(),
@@ -33,6 +34,9 @@ const AddNote: React.FC<{ refreshNotes: () => void }> = ({refreshNotes}) => {
         dispatch({ type: 'SET_ADDING_NOTE', payload: false });
     };
 
+    const handleKeyDown =  editorShortcutListener({save: saveNote, cancel: cancelAddNote})
+
+
     useEffect(() => {
         if (state.addingNote && textareaRef.current) {
             textareaRef.current.focus();
@@ -47,9 +51,10 @@ const AddNote: React.FC<{ refreshNotes: () => void }> = ({refreshNotes}) => {
                 onChange={(e) => setNewNoteContent(e.target.value)}
                 placeholder={t('action.add_note')}
                 className="note-editor"
+                onKeyDown={handleKeyDown}
             />
             <div>
-                <button onClick={handleAddNote} className="edit-button">
+                <button onClick={saveNote} className="edit-button">
                     {t('action.save')}
                 </button>
                 <button onClick={cancelAddNote} className="cancel-button">
