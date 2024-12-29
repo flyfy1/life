@@ -43,17 +43,32 @@ export function formatTime(isoString: string): string {
   }
 }
 
-// 相对时间（比如：3分钟前）
-export function formatRelativeTime(isoString: string): string {
+
+// TODO: t 的类型我不太确定 应该怎么声明
+export function formatRelativeTime(isoString: string, t: any): string {
   try {
     const date = new Date(isoString);
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    if (diffInSeconds < 60) return '刚刚';
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}分钟前`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}小时前`;
-    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}天前`;
+    if (diffInSeconds < 60) return t('timing.just_now');
+
+    var num : number|undefined, unit: string = ""
+
+    if (diffInSeconds < 3600){
+      num = Math.floor(diffInSeconds / 60)
+      unit = t("timing.unit_minute")
+    }  else if (diffInSeconds < 86400) {
+      num = Math.floor(diffInSeconds / 3600)
+      unit = t("timing.unit_hour")
+    } else if (diffInSeconds < 604800) {
+      num = Math.floor(diffInSeconds / 86400)
+      unit = t("timing.unit_day")
+    }
+
+    if(unit != "") {
+      return t('timing.num_unit_ago', {num: num, unit: unit})
+    }
     
     return formatDateTime(isoString);
   } catch (e) {

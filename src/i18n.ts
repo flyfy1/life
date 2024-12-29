@@ -23,14 +23,17 @@ const translations: KeyTranslations = translate([
   // Actions
     ["edit", "Edit", "编辑"],
     ["login", "Login", "登录"],
+    ["note.updated_at", "Login", "登录"],
     ["sync", "Sync Notes", "同步笔记"],
     ["sync.success", "Sync success", "同步成功"],
-    ["login.failed", "Login failed, please check username & password", '登录失败，请检查您的用户名和密码。'],
-    ["login.failed", "Login successful", '登陆成功'],
     ["sync.failure", "Sync failed. please try again later", "同步失败，请稍后重试"],
 
+    ["login.failed", "Login failed, please check username & password", '登录失败，请检查您的用户名和密码。'],
+    ["login.succeeded", "Login successful", '登陆成功'],
     ["logout", "Logout", "退出登录"],
+
     ["add_note", "Add Note", "添加笔记"],
+    ["note.updated_at", "Updated at: {{time}}", "更新于：{{time}}"],
 
   // Login Prompt
     ["username", "Username", "用户名"],
@@ -48,6 +51,12 @@ const translations: KeyTranslations = translate([
     ["sync_notes", "Sync Notes", "同步笔记"],
     ["logout", "Logout", "退出登录"],
     ["last_x_days", "最近{{days}}天", "最近{{days}}天"],
+
+    ["timing.num_unit_ago", "{{num}} {{unit}} ago", "{{num}}{{unit}}前"],
+    ["timing.just_now", "just now", "刚刚"],
+    ["timing.unit_hour", "hour", "小时"],
+    ["timing.unit_minute", "minute", "分钟" ],
+    ["timing.unit_day", "day", "天"],
 ]);
 
 i18n

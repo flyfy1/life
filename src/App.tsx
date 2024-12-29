@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useNoteContext } from './context/NoteContext';
 import ToastContainer from './components/ToastContainer';
 import AddNote from './components/AddNote';
+import Login from './components/Login';
 
 function App() {
   const { t } = useTranslation();
@@ -95,28 +96,6 @@ function App() {
     }
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      const response = await ApiService.login({ username: state.username, password: state.password });
-      if(response.error) {
-        throw(response.error);
-      }
-      localStorage.setItem('token', response.token);
-      dispatch({ type: 'LOGIN' });
-      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.succeeded'), color: "green" } });
-      await initializeApp();
-      
-      // 登录后自动同步最近7天的笔记
-      // TODO: 这个同步目前还有点问题：没能把本地的笔记发出去 -- 应该是因为 state还没更新的原因
-      await handleManualSync();
-    } catch (error) {
-      console.error('登录失败:', error);
-      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.failed'), color: "red" } });
-    }
-  };
-
   const editingNote = state.editingNote;
   const setEditingNote = (note: Note|null) => {
     dispatch({type: 'SET_EDITING_NOTE', payload: note})
@@ -142,38 +121,14 @@ function App() {
 
       <ToastContainer />
 
-      {!state.isLoggedIn ? (
-        // TODO: 把 Login状态单独拿出来处理
-        <div className="flex flex-col items-center justify-center min-h-screen p-5 bg-gray-100">
-          <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-            <h2 className="text-center text-gray-800 text-2xl mb-5">{t('login')}</h2>
-            <form className="flex flex-col gap-4" onSubmit={handleLogin}>
-              <input
-                type="text"
-                placeholder={t('username')}
-                value={state.username}
-                onChange={(e) => dispatch({ type: 'SET_USERNAME', payload: e.target.value })}
-                required
-                className="p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-              />
-              <input
-                type="password"
-                placeholder={t('password')}
-                value={state.password}
-                onChange={(e) => dispatch({ type: 'SET_PASSWORD', payload: e.target.value })}
-                required
-                className="p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-              />
-              <button
-                type="submit"
-                className="p-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-              >
-                {t('login')}
-              </button>
-            </form>
-          </div>
-        </div>
-      ) : (
+      {!state.isLoggedIn ?
+        <Login successCallback={async () => {
+          await initializeApp();
+
+          // 登录后自动同步最近7天的笔记
+          // TODO: 这个同步目前还有点问题：没能把本地的笔记发出去 -- 应该是因为 state还没更新的原因
+          await handleManualSync();
+        }} /> :
         <div className="notes-container">
           <div className="flex justify-between items-center">
             <h1 className='site-title'>{t('my_notes')}</h1>
@@ -185,7 +140,7 @@ function App() {
               <header className="note-header">
                 <h1>{formatDateTime(note.ctime)}</h1>
                 <div className="note-meta flex justify-between items-center">
-                  <span>更新于: {formatRelativeTime(note.mtime)}</span>
+                  <span>{t("note.updated_at", {time: formatRelativeTime(note.mtime, t)})}</span>
                 </div>
               </header>
 
@@ -225,7 +180,7 @@ function App() {
             </article>
           ))}
         </div>
-      )}
+      }
     </div>
   );
 }
