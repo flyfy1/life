@@ -72,7 +72,7 @@ export function Toolbar({
   }
 
   return (
-    <div className="toolbar flex items-center px-4 gap-2">
+    <div className="toolbar flex flex-col gap-2">
       {isLoggedIn ? (
         <>
           <div className="flex items-center gap-2">
@@ -99,7 +99,6 @@ export function Toolbar({
                 className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               />
             </div>
-            
             <div className="flex items-center gap-2">
               <select
                 value={sortOption.field}
@@ -112,7 +111,6 @@ export function Toolbar({
                 <option value="ctime">{t('creation_time')}</option>
                 <option value="mtime">{t('modification_time')}</option>
               </select>
-              
               <button
                 className={`p-2 border border-gray-300 rounded bg-white hover:bg-gray-100 transition ${sortOption.direction}`}
                 onClick={() => onSortChange({
@@ -125,7 +123,7 @@ export function Toolbar({
             </div>
           </div>
 
-          <div className="ml-auto flex items-center gap-2 right-controls">
+          <div className="flex items-center gap-2 ml-auto right-controls">
             <button onClick={onAddNote} className="edit-button">
               {t('add_note')}
             </button>
