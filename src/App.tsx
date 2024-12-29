@@ -137,6 +137,7 @@ function App() {
                 <h1>{formatDateTime(note.ctime)}</h1>
                 <div className="note-meta flex justify-between items-center">
                   <span>{t("note.updated_at", {time: formatRelativeTime(note.mtime, t)})}</span>
+                  {note.ctime != note.mtime ? <span>{t("note.created_at", {time: formatRelativeTime(note.ctime, t)})}</span> : ""}
                 </div>
               </header>
 

@@ -35,6 +35,7 @@ const translations: KeyTranslations = translate([
     ["login.succeeded", "Login successful", '登陆成功'],
 
     ["note.updated_at", "Updated at: {{time}}", "更新于：{{time}}"],
+    ["note.created_at", "Created at: {{time}}", "创建于：{{time}}"],
 
   // Login Prompt
     ["username", "Username", "用户名"],
