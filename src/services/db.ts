@@ -38,6 +38,7 @@ export class DatabaseService {
     return this.db.getAll('notes');
   }
 
+  // TODO: sync note based on lastSync instead
   static async getLastSync() {
     return this.db.get('sync', 'lastSync');
   }
