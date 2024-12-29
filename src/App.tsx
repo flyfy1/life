@@ -17,7 +17,6 @@ import Login from './components/Login';
 function App() {
   const { t } = useTranslation();
   const { state, dispatch } = useNoteContext();
-  const newNoteInputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
