@@ -11,17 +11,10 @@ interface ToolbarProps {
   isLoggedIn: boolean;
   onSync: () => void;
   onLogout: () => void;
-  isSyncing: boolean;
-  dateRange: {
-    startDate: string;
-    endDate: string;
-  };
   onDateRangeChange: (range: { startDate: string; endDate: string }) => void;
-  sortOption: SortOption;
   onSortChange: (option: SortOption) => void;
   changeLang: (lng: string) => void;
   t: TFunction;
-  syncDays: number;
   onSyncDaysChange: (days: number) => void;
 }
 
@@ -29,20 +22,18 @@ export function Toolbar({
   isLoggedIn, 
   onSync, 
   onLogout, 
-  isSyncing, 
-  dateRange,
   onDateRangeChange,
-  sortOption,
   onSortChange,
   changeLang,
   t,
-  syncDays,
   onSyncDaysChange,
 }: ToolbarProps) {
   const { state, dispatch } = useNoteContext();
 
-  const sortDirection = state.sortOption.direction
-  const sortField = state.sortOption.field
+  const { isSyncing, sortOption, dateRange, syncDays } = state;
+
+  const sortDirection = sortOption.direction;
+  const sortField = sortOption.field;
 
   // TODO: move this logic into reducer
   const loadLocalNotes = async () => {

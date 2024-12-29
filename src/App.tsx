@@ -197,14 +197,10 @@ function App() {
         isLoggedIn={state.isLoggedIn}
         onSync={handleManualSync}
         onLogout={handleLogout}
-        isSyncing={state.isSyncing}
-        dateRange={state.dateRange}
         onDateRangeChange={handleDateRangeChange}
-        sortOption={state.sortOption}
         onSortChange={handleSortChange}
         changeLang={changeLanguage}
         t={t}
-        syncDays={state.syncDays}
         onSyncDaysChange={handleSyncDaysChange}
       />
 
