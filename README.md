@@ -2,6 +2,10 @@
 
 A diary/note synchronization application built with React and TypeScript, supporting both online and offline usage.
 
+Currently at: <https://life.songyangyu.com/>
+
+Private Beta, open-sourced on client side. Create an issue here if interested in trying out
+
 ## Setup
 
 ```bash
