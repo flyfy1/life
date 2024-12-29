@@ -14,6 +14,7 @@ import { sortNotes } from './utils/note';
 import { useTranslation } from 'react-i18next';
 import { useNoteContext } from './context/NoteContext';
 import ToastContainer from './components/ToastContainer';
+import AddNote from './components/AddNote';
 
 function App() {
   const { t } = useTranslation();
@@ -116,29 +117,6 @@ function App() {
     }
   };
 
-  const cancelAddNote = async () => {
-    dispatch({ type: 'SET_ADDING_NOTE', payload: false });
-  }
-
-  const handleAddNote = async () => {
-    if (newNoteContent.trim()) {
-      const newNote: Note = {
-        id: Date.now(),
-        uuid: generateUUID(),
-        ctime: new Date().toISOString(),
-        mtime: new Date().toISOString(),
-        content: newNoteContent,
-      };
-      await DatabaseService.saveNote(newNote);
-      dispatch({ type: 'SET_ADDING_NOTE', payload: false });
-      setNewNoteContent("")
-
-      await loadLocalNotes();
-    }
-  };
-
-  const [newNoteContent, setNewNoteContent] = useState('');
-
   const editingNote = state.editingNote;
   const setEditingNote = (note: Note|null) => {
     dispatch({type: 'SET_EDITING_NOTE', payload: note})
@@ -200,30 +178,7 @@ function App() {
           <div className="flex justify-between items-center">
             <h1 className='site-title'>{t('my_notes')}</h1>
           </div>
-
-            {state.addingNote ? // 在返回的 JSX 中添加输入框和按钮
-              <div className="add-note-container">
-                <textarea
-                  value={newNoteContent}
-                  onChange={(e) => setNewNoteContent(e.target.value)}
-                  placeholder={t('add_note')}
-                  className="note-editor"
-                />
-                <div>
-                  <button
-                    onClick={handleAddNote}
-                    className="edit-button"
-                  >
-                    {t('add_note')}
-                  </button>
-                  <button
-                    onClick={cancelAddNote}
-                    className="cancel-button"
-                  >
-                    {t('cancel')}
-                  </button>
-                </div>
-              </div> : ""}
+          <AddNote refreshNotes={loadLocalNotes}/>
 
           {state.notes.map(note => (
             <article key={note.uuid} className="note-article">
