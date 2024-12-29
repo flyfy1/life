@@ -95,9 +95,14 @@ function App() {
         notes: state.notes
       };
       const response = await ApiService.syncNotes(syncRequest);
-      if(response.error) {
-        // TODO: response.error to add translation
-        // TODO: handle based on code
+      if (response.error) {
+        // TODO: better error-code for token being invalid
+        if (response.code === 401) {
+          localStorage.removeItem('token');
+          dispatch({ type: 'LOGOUT' });
+          return;
+        }
+
         dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: response.error, color: "red" } });
       } else {
         const server_newer = response.server_newer || [];
@@ -111,7 +116,7 @@ function App() {
         dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('sync.success'), color: "green" } });
       }
     } catch (error) {
-      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('sync.failed') , color: "yellow" } });
+      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('sync.failed'), color: "yellow" } });
       console.error('同步失败:', error);
     } finally {
       dispatch({ type: 'SET_SYNCING', payload: false });
