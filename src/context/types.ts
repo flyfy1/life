@@ -21,7 +21,11 @@ export interface State {
 
   // TODO: remove
   syncDays: number;
+
+  toasts: Toast[];
 }
+
+export type Toast = { id: number; message: string ; color?: "default" | "green" | "yellow" | "red" }
 
 export const ActionTypes = {
   LOGIN: 'LOGIN',
@@ -37,6 +41,8 @@ export const ActionTypes = {
   SET_EDITING_NOTE: 'SET_EDITING_NOTE',
   SET_ADDING_NOTE: 'SET_ADDING_NOTE',
   SET_SYNC_DAYS: 'SET_SYNC_DAYS',
+  ADD_TOAST: 'ADD_TOAST',
+  REMOVE_TOAST: 'REMOVE_TOAST',
 } as const;
 
 export type Action = 
@@ -52,4 +58,6 @@ export type Action =
   | { type: typeof ActionTypes.SET_ERROR_MESSAGE; payload: string | null }
   | { type: typeof ActionTypes.SET_EDITING_NOTE; payload: Note | null }
   | { type: typeof ActionTypes.SET_ADDING_NOTE; payload: boolean }
-  | { type: typeof ActionTypes.SET_SYNC_DAYS; payload: number };
+  | { type: typeof ActionTypes.SET_SYNC_DAYS; payload: number }
+  | { type: typeof ActionTypes.ADD_TOAST; payload: Toast }
+  | { type: typeof ActionTypes.REMOVE_TOAST; payload: number };

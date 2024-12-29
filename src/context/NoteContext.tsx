@@ -15,6 +15,7 @@ const initialState: State = {
   editingNote: null,
   addingNote: false,
   syncDays: 7,
+  toasts: []
 };
 
 const NoteContext = createContext<{ state: State; dispatch: React.Dispatch<Action> } | undefined>(undefined);
@@ -74,6 +75,10 @@ const noteReducer = (state: State, action: Action): State => {
       return { ...state, addingNote: action.payload };
     case ActionTypes.SET_SYNC_DAYS:
       return { ...state, syncDays: action.payload };
+    case ActionTypes.ADD_TOAST:
+      return { ...state, toasts: [...state.toasts, action.payload] };
+    case ActionTypes.REMOVE_TOAST:
+      return { ...state, toasts: state.toasts.filter(toast => toast.id !== action.payload) };
     default:
       return state;
   }
