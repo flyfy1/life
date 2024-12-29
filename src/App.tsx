@@ -14,7 +14,6 @@ import { sortNotes } from './utils/note';
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
 import { useNoteContext } from './context/NoteContext';
-import { nodeModuleNameResolver } from 'typescript';
 import ToastContainer from './components/ToastContainer';
 
 function App() {
@@ -126,10 +125,9 @@ function App() {
       localStorage.setItem('token', response.token);
       dispatch({ type: 'LOGIN' });
       await initializeApp();
-      dispatch({ type: 'SET_ERROR_MESSAGE', payload: null });
     } catch (error) {
       console.error('登录失败:', error);
-      dispatch({ type: 'SET_ERROR_MESSAGE', payload: '登录失败，请检查您的用户名和密码。' });
+      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.failed'), color: "yellow" } });
     }
   };
 
@@ -200,8 +198,6 @@ function App() {
       />
 
       <ToastContainer />
-      
-      {state.errorMessage && <div className="toast">{state.errorMessage}</div>}
 
       {!state.isLoggedIn ? (
         // TODO: 把 Login状态单独拿出来处理

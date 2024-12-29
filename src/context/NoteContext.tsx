@@ -11,7 +11,6 @@ const initialState: State = {
   syncMessage: null,
   dateRange: { startDate: '', endDate: '' },
   sortOption: { field: 'ctime', direction: 'desc' },
-  errorMessage: null,
   editingNote: null,
   addingNote: false,
   syncDays: 7,
@@ -57,8 +56,6 @@ const noteReducer = (state: State, action: Action): State => {
       return { ...state, username: action.payload };
     case ActionTypes.SET_PASSWORD:
       return { ...state, password: action.payload };
-    case ActionTypes.SET_ERROR_MESSAGE:
-      return { ...state, errorMessage: action.payload };
     case ActionTypes.SET_NOTES:
       return { ...state, notes: action.payload };
     case ActionTypes.SET_SYNCING:

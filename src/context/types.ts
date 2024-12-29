@@ -16,9 +16,6 @@ export interface State {
   dateRange: { startDate: string; endDate: string };
   sortOption: SortOption;
 
-  // 全局的error message
-  errorMessage: string | null;
-
   // TODO: remove
   syncDays: number;
 
@@ -32,7 +29,6 @@ export const ActionTypes = {
   LOGOUT: 'LOGOUT',
   SET_USERNAME: 'SET_USERNAME',
   SET_PASSWORD: 'SET_PASSWORD',
-  SET_ERROR_MESSAGE: 'SET_ERROR_MESSAGE',
   SET_NOTES: 'SET_NOTES',
   SET_SYNCING: 'SET_SYNCING',
   SET_SYNC_MESSAGE: 'SET_SYNC_MESSAGE',
@@ -55,7 +51,6 @@ export type Action =
   | { type: typeof ActionTypes.SET_SYNC_MESSAGE; payload: string | null }
   | { type: typeof ActionTypes.SET_DATE_RANGE; payload: { startDate: string; endDate: string } }
   | { type: typeof ActionTypes.SET_SORT_OPTION; payload: SortOption }
-  | { type: typeof ActionTypes.SET_ERROR_MESSAGE; payload: string | null }
   | { type: typeof ActionTypes.SET_EDITING_NOTE; payload: Note | null }
   | { type: typeof ActionTypes.SET_ADDING_NOTE; payload: boolean }
   | { type: typeof ActionTypes.SET_SYNC_DAYS; payload: number }
