@@ -1,0 +1,30 @@
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.toast {
+  background-color: rgba(0,0,0,0.2);
+  min-width: 300px;
+  color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &.red {
+    color: red;
+  }
+
+  &.green {
+    color: green;
+  }
+
+  &.yellow {
+    color: yellow;
+  }
+}

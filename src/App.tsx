@@ -8,12 +8,13 @@ import { Toolbar } from './components/Toolbar';
 import './styles/homepage.css';
 import './styles/notes.css';
 import './styles/toolbar.css';
+import './styles/toast.css';
 import { generateUUID } from './utils/uuid';
 import { sortNotes } from './utils/note';
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
 import { useNoteContext } from './context/NoteContext';
-import { nodeModuleNameResolver } from 'typescript';
+import ToastContainer from './components/ToastContainer';
 
 function App() {
   const { t } = useTranslation();
@@ -82,7 +83,6 @@ function App() {
 
   const handleManualSync = async () => {
     dispatch({ type: 'SET_SYNCING', payload: true });
-    dispatch({ type: 'SET_SYNC_MESSAGE', payload: null });
     try {
       const endDate = new Date();
       const startDate = new Date();
@@ -94,37 +94,52 @@ function App() {
         notes: state.notes
       };
       const response = await ApiService.syncNotes(syncRequest);
+      if (response.error) {
+        // TODO: better error-code for token being invalid
+        if (response.code === 401) {
+          localStorage.removeItem('token');
+          dispatch({ type: 'LOGOUT' });
+          return;
+        }
 
-      const server_newer = response.server_newer || [];
-      const only_on_server = response.only_on_server || [];
+        dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: response.error, color: "red" } });
+      } else {
+        const server_newer = response.server_newer || [];
+        const only_on_server = response.only_on_server || [];
 
-      for (const note of [...server_newer, ...only_on_server]) {
-        await DatabaseService.saveNote(note);
+        for (const note of [...server_newer, ...only_on_server]) {
+          await DatabaseService.saveNote(note);
+        }
+
+        await loadLocalNotes();
+        dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('sync.success'), color: "green" } });
       }
-
-      await loadLocalNotes();
-      dispatch({ type: 'SET_SYNC_MESSAGE', payload: t('sync.success') });
     } catch (error) {
-      dispatch({ type: 'SET_SYNC_MESSAGE', payload: t('sync.failed') });
+      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('sync.failed'), color: "yellow" } });
       console.error('同步失败:', error);
     } finally {
       dispatch({ type: 'SET_SYNCING', payload: false });
-      // TODO: clear toast的逻辑，应该单独放
-      setTimeout(() => dispatch({ type: 'SET_SYNC_MESSAGE', payload: null }), 3000);
     }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       const response = await ApiService.login({ username: state.username, password: state.password });
+      if(response.error) {
+        throw(response.error);
+      }
       localStorage.setItem('token', response.token);
       dispatch({ type: 'LOGIN' });
+      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.succeeded'), color: "red" } });
       await initializeApp();
-      dispatch({ type: 'SET_ERROR_MESSAGE', payload: null });
+      
+      // 登录后自动同步最近7天的笔记
+      await handleManualSync();
     } catch (error) {
       console.error('登录失败:', error);
-      dispatch({ type: 'SET_ERROR_MESSAGE', payload: '登录失败，请检查您的用户名和密码。' });
+      dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.failed'), color: "red" } });
     }
   };
 
@@ -193,8 +208,8 @@ function App() {
         syncDays={state.syncDays}
         onSyncDaysChange={handleSyncDaysChange}
       />
-      
-      {state.errorMessage && <div className="toast">{state.errorMessage}</div>}
+
+      <ToastContainer />
 
       {!state.isLoggedIn ? (
         // TODO: 把 Login状态单独拿出来处理

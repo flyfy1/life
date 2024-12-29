@@ -11,10 +11,10 @@ const initialState: State = {
   syncMessage: null,
   dateRange: { startDate: '', endDate: '' },
   sortOption: { field: 'ctime', direction: 'desc' },
-  errorMessage: null,
   editingNote: null,
   addingNote: false,
   syncDays: 7,
+  toasts: []
 };
 
 const NoteContext = createContext<{ state: State; dispatch: React.Dispatch<Action> } | undefined>(undefined);
@@ -56,14 +56,10 @@ const noteReducer = (state: State, action: Action): State => {
       return { ...state, username: action.payload };
     case ActionTypes.SET_PASSWORD:
       return { ...state, password: action.payload };
-    case ActionTypes.SET_ERROR_MESSAGE:
-      return { ...state, errorMessage: action.payload };
     case ActionTypes.SET_NOTES:
       return { ...state, notes: action.payload };
     case ActionTypes.SET_SYNCING:
       return { ...state, isSyncing: action.payload };
-    case ActionTypes.SET_SYNC_MESSAGE:
-      return { ...state, syncMessage: action.payload };
     case ActionTypes.SET_DATE_RANGE:
       return { ...state, dateRange: action.payload };
     case ActionTypes.SET_SORT_OPTION:
@@ -74,6 +70,10 @@ const noteReducer = (state: State, action: Action): State => {
       return { ...state, addingNote: action.payload };
     case ActionTypes.SET_SYNC_DAYS:
       return { ...state, syncDays: action.payload };
+    case ActionTypes.ADD_TOAST:
+      return { ...state, toasts: [...state.toasts, action.payload] };
+    case ActionTypes.REMOVE_TOAST:
+      return { ...state, toasts: state.toasts.filter(toast => toast.id !== action.payload) };
     default:
       return state;
   }

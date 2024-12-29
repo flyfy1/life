@@ -4,4 +4,11 @@
   z-index: 50;
   background-color: #f8f9fa;
   border-bottom: 1px solid #dee2e6;
+  flex-direction: row;
+}
+
+@media (max-width: 840px) {
+  .toolbar {
+    flex-direction: column;
+  }
 }
