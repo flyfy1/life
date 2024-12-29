@@ -131,7 +131,7 @@ export function Toolbar({
 
           <div className="flex items-center gap-2 ml-auto right-controls">
             <button onClick={onAddNote} className="edit-button">
-              {t('add_note')}
+              {t('action.add_note')}
             </button>
             <select value={syncDays} onChange={(e) => handleSyncDaysChange(Number(e.target.value))}>
               <option value={7}>{t('last_x_days', { days: 7 })}</option>
@@ -145,7 +145,7 @@ export function Toolbar({
             >
               {isSyncing ? t('syncing') : t('sync_notes')}
             </button>
-            <button onClick={handleLogout}>{t('logout')}</button>
+            <button onClick={handleLogout}>{t('action.logout')}</button>
             <select onChange={(e) => changeLanguage(e.target.value)} className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
               <option value="zh">中文</option>
               <option value="en">English</option>

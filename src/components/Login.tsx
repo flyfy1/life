@@ -51,7 +51,7 @@ const Login: React.FC<{successCallback: ()=>void }> = ({successCallback}) => {
             type="submit"
             className="p-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
           >
-            {t('login')}
+            {t('action.login')}
           </button>
         </form>
       </div>

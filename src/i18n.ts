@@ -21,36 +21,34 @@ function translate(translations: SingleKeyT[]): KeyTranslations {
 
 const translations: KeyTranslations = translate([
   // Actions
-    ["edit", "Edit", "编辑"],
-    ["login", "Login", "登录"],
-    ["note.updated_at", "Login", "登录"],
-    ["sync", "Sync Notes", "同步笔记"],
+    ["action.edit", "Edit", "编辑"],
+    ["action.login", "Login", "登录"],
+    ["action.logout", "Logout", "退出登录"],
+    ["action.save", "Save", "保存"],
+    ["action.cancel", "Cancel", "取消"],
+    ["action.add_note", "Add Note", "添加笔记"],
+
     ["sync.success", "Sync success", "同步成功"],
     ["sync.failure", "Sync failed. please try again later", "同步失败，请稍后重试"],
 
     ["login.failed", "Login failed, please check username & password", '登录失败，请检查您的用户名和密码。'],
     ["login.succeeded", "Login successful", '登陆成功'],
-    ["logout", "Logout", "退出登录"],
 
-    ["add_note", "Add Note", "添加笔记"],
     ["note.updated_at", "Updated at: {{time}}", "更新于：{{time}}"],
 
   // Login Prompt
     ["username", "Username", "用户名"],
     ["password", "Password", "密码"],
     ["my_notes", "My Notes", "我的笔记"],
-    ["save", "Save", "保存"],
-    ["cancel", "Cancel", "取消"],
+
     ["sync_success", "Sync successful", "同步成功"],
-    ["sync_failure", 
-      "Sync failed, please try again later", "同步失败，请稍后重试"],
+    ["sync_failure", "Sync failed, please try again later", "同步失败，请稍后重试"],
     ["to", "to", "至"],
     ["creation_time", "Creation Time", "创建时间" ],
     ["modification_time", "Modification Time", "修改时间" ],
     ["syncing", "Syncing...", "同步中..."],
     ["sync_notes", "Sync Notes", "同步笔记"],
-    ["logout", "Logout", "退出登录"],
-    ["last_x_days", "最近{{days}}天", "最近{{days}}天"],
+    ["last_x_days", "recent {{days}} days", "最近{{days}}天"],
 
     ["timing.num_unit_ago", "{{num}} {{unit}} ago", "{{num}}{{unit}}前"],
     ["timing.just_now", "just now", "刚刚"],

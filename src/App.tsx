@@ -155,13 +155,13 @@ function App() {
                     onClick={() => handleSaveNote(editingNote)} 
                     className="edit-button"
                   >
-                    {t('save')}
+                    {t('action.save')}
                   </button>
                   <button 
                     onClick={handleCancelEdit} 
                     className="cancel-button"
                   >
-                    {t('cancel')}
+                    {t('action.cancel')}
                   </button>
                 </div>
               ) : (
@@ -173,7 +173,7 @@ function App() {
                     onClick={() => handleEditNote(note)} 
                     className="edit-button"
                   >
-                    {t('edit')}
+                    {t('action.edit')}
                   </button>
                 </div>
               )}

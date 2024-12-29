@@ -37,15 +37,15 @@ const AddNote: React.FC<{ refreshNotes: () => void }> = ({refreshNotes}) => {
             <textarea
                 value={newNoteContent}
                 onChange={(e) => setNewNoteContent(e.target.value)}
-                placeholder={t('add_note')}
+                placeholder={t('action.add_note')}
                 className="note-editor"
             />
             <div>
                 <button onClick={handleAddNote} className="edit-button">
-                    {t('add_note')}
+                    {t('action.save')}
                 </button>
                 <button onClick={cancelAddNote} className="cancel-button">
-                    {t('cancel')}
+                    {t('action.cancel')}
                 </button>
             </div>
         </div>
