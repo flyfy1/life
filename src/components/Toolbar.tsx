@@ -12,7 +12,6 @@ interface ToolbarProps {
   onSync: () => void;
   onLogout: () => void;
   isSyncing: boolean;
-  syncMessage: string | null;
   dateRange: {
     startDate: string;
     endDate: string;
@@ -31,7 +30,6 @@ export function Toolbar({
   onSync, 
   onLogout, 
   isSyncing, 
-  syncMessage,
   dateRange,
   onDateRangeChange,
   sortOption,
@@ -144,10 +142,14 @@ export function Toolbar({
               <option value="zh">中文</option>
               <option value="en">English</option>
             </select>
-            {syncMessage && <span className="sync-message">{syncMessage}</span>}
           </div>
         </>
-      ) : null}
+      ) :  <div className="flex items-center gap-2 ml-auto right-controls">
+            <select onChange={(e) => changeLang(e.target.value)} className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+              <option value="zh">中文</option>
+              <option value="en">English</option>
+            </select>
+        </div>}
     </div>
   );
 } 

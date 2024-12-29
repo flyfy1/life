@@ -198,7 +198,6 @@ function App() {
         onSync={handleManualSync}
         onLogout={handleLogout}
         isSyncing={state.isSyncing}
-        syncMessage={state.syncMessage}
         dateRange={state.dateRange}
         onDateRangeChange={handleDateRangeChange}
         sortOption={state.sortOption}
@@ -215,7 +214,7 @@ function App() {
         // TODO: 把 Login状态单独拿出来处理
         <div className="flex flex-col items-center justify-center min-h-screen p-5 bg-gray-100">
           <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-            <h2 className="text-center text-gray-800 text-2xl mb-5">{t('login')}到笔记</h2>
+            <h2 className="text-center text-gray-800 text-2xl mb-5">{t('login')}</h2>
             <form className="flex flex-col gap-4" onSubmit={handleLogin}>
               <input
                 type="text"
