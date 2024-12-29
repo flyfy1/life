@@ -60,8 +60,6 @@ const noteReducer = (state: State, action: Action): State => {
       return { ...state, notes: action.payload };
     case ActionTypes.SET_SYNCING:
       return { ...state, isSyncing: action.payload };
-    case ActionTypes.SET_SYNC_MESSAGE:
-      return { ...state, syncMessage: action.payload };
     case ActionTypes.SET_DATE_RANGE:
       return { ...state, dateRange: action.payload };
     case ActionTypes.SET_SORT_OPTION:

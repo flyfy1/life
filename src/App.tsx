@@ -83,7 +83,6 @@ function App() {
 
   const handleManualSync = async () => {
     dispatch({ type: 'SET_SYNCING', payload: true });
-    dispatch({ type: 'SET_SYNC_MESSAGE', payload: null });
     try {
       const endDate = new Date();
       const startDate = new Date();
@@ -130,6 +129,9 @@ function App() {
       localStorage.setItem('token', response.token);
       dispatch({ type: 'LOGIN' });
       await initializeApp();
+      
+      // 登录后自动同步最近7天的笔记
+      await handleManualSync();
     } catch (error) {
       console.error('登录失败:', error);
       dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.failed'), color: "yellow" } });

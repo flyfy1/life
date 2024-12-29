@@ -31,7 +31,6 @@ export const ActionTypes = {
   SET_PASSWORD: 'SET_PASSWORD',
   SET_NOTES: 'SET_NOTES',
   SET_SYNCING: 'SET_SYNCING',
-  SET_SYNC_MESSAGE: 'SET_SYNC_MESSAGE',
   SET_DATE_RANGE: 'SET_DATE_RANGE',
   SET_SORT_OPTION: 'SET_SORT_OPTION',
   SET_EDITING_NOTE: 'SET_EDITING_NOTE',
@@ -48,7 +47,6 @@ export type Action =
   | { type: typeof ActionTypes.SET_USERNAME; payload: string }
   | { type: typeof ActionTypes.SET_PASSWORD; payload: string }
   | { type: typeof ActionTypes.SET_SYNCING; payload: boolean }
-  | { type: typeof ActionTypes.SET_SYNC_MESSAGE; payload: string | null }
   | { type: typeof ActionTypes.SET_DATE_RANGE; payload: { startDate: string; endDate: string } }
   | { type: typeof ActionTypes.SET_SORT_OPTION; payload: SortOption }
   | { type: typeof ActionTypes.SET_EDITING_NOTE; payload: Note | null }
