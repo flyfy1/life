@@ -132,7 +132,7 @@ function App() {
 
           // 登录后自动同步最近7天的笔记
           // TODO: 这个同步目前还有点问题：没能把本地的笔记发出去 -- 应该是因为 state还没更新的原因
-          await handleManualSync();
+          // await handleManualSync();
         }} /> :
         <div className="notes-container">
           <div className="flex justify-between items-center">

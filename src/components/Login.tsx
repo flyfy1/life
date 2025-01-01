@@ -19,7 +19,7 @@ const Login: React.FC<{successCallback: ()=>void }> = ({successCallback}) => {
       dispatch({ type: 'LOGIN' });
       dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.succeeded'), color: "green" } });
 
-      // TODO: after login logic
+      successCallback();
     } catch (error) {
       console.error('登录失败:', error);
       dispatch({ type: 'ADD_TOAST', payload: { id: Date.now(), message: t('login.failed'), color: "red" } });
