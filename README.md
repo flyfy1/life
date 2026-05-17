@@ -1,24 +1,34 @@
-# life
+# integ.life — Claude Skills
 
-Claude Code Agent Skills for the [LifeOnGolang](https://github.com/flyfy1/life-on-golang) personal-data stack.
+*[中文](README.zh-CN.md) · English*
 
-Each subdirectory under `skills/` is one skill in the standard `SKILL.md` format. They tell Claude *when* to call which tool from the `life-on-golang` MCP server (which exposes the backend's contract types as JSON-RPC tools at `POST /mcp/v1`).
+> **Your Personal OS for Thinking & Doing**
+>
+> Capture thoughts. Extract insights. Execute with focus. Sync everywhere — offline-first, always in sync.
+>
+> 🌐 **[integ.life](https://integ.life)** · 🤖 AI-powered productivity · 📱 Web · macOS · Android · Wear OS
 
-## Skills
+---
+
+This repo ships the **Claude Code skills** that let an AI agent drive your [integ.life](https://integ.life) data — money, todos, notes, goals, mood, focus time — through natural conversation.
+
+The skills live alongside an MCP (Model Context Protocol) server inside integ.life's backend. Together they turn *"I spent 35 on lunch"*, *"what's on my plate this week"*, or *"how have I been feeling"* into the right call against your own data.
+
+## 🧠 What's inside
+
+Seven skills, one per life domain. Each `SKILL.md` tells Claude *when* to trigger and *which* tool to call.
 
 | Skill | Trigger |
 |---|---|
-| [`life-money`](skills/life-money/SKILL.md) | Record an expense/income, query spending, check balances |
-| [`life-todo`](skills/life-todo/SKILL.md) | Add/list/complete todos |
-| [`life-idea`](skills/life-idea/SKILL.md) | Capture notes / search past ideas |
-| [`life-goal`](skills/life-goal/SKILL.md) | Inspect goals, log check-ins |
-| [`life-mood`](skills/life-mood/SKILL.md) | Log feelings/energy, review past entries |
-| [`life-pomodoro`](skills/life-pomodoro/SKILL.md) | Inspect focus-time stats |
-| [`life-overview`](skills/life-overview/SKILL.md) | Cross-domain weekly/monthly summaries |
+| 💰 [`life-money`](skills/life-money/SKILL.md) | "I spent X" · "how much did I spend on Y" · "show last week's transactions" |
+| ✅ [`life-todo`](skills/life-todo/SKILL.md) | "add a todo" · "what's due today" · "mark X done" |
+| 📝 [`life-idea`](skills/life-idea/SKILL.md) | "jot this down" · "find my notes on Y" |
+| 🎯 [`life-goal`](skills/life-goal/SKILL.md) | "what are my active goals" · "log a check-in on Y" |
+| 🌤️ [`life-mood`](skills/life-mood/SKILL.md) | "I'm feeling tired" · "how have I been this week" |
+| ⏱️ [`life-pomodoro`](skills/life-pomodoro/SKILL.md) | "how much focused time did I get today" |
+| 🔭 [`life-overview`](skills/life-overview/SKILL.md) | "how was my week" · "give me a status update" |
 
-## Install
-
-Symlink each skill directory into `~/.claude/skills/`:
+## 🚀 Install
 
 ```bash
 git clone git@github.com:flyfy1/life.git ~/code/life-skills
@@ -27,8 +37,13 @@ for d in ~/code/life-skills/skills/life-*; do
 done
 ```
 
-You also need the MCP server configured — point Claude Code at `https://<your-host>/mcp/v1` with a `Bearer tok_...` token from `POST /api/tokens` on the backend.
+Then point Claude Code at your integ.life MCP endpoint (`POST <your-host>/mcp/v1`) with a bearer token created from the app's *Settings → API Tokens* screen.
 
-## Consumed as a submodule
+## 🌐 Related
 
-This repo is also pulled into [`life-on-golang`](https://github.com/flyfy1/life-on-golang) as a submodule under `tools/skills/`, so the skills version-pin alongside the backend that exposes them. Bump the skills here, then update the submodule pointer in the consumer repo.
+- 🏠 **[integ.life](https://integ.life)** — sign up, web/macOS/Android/Wear OS apps
+- ⌨️ **[life-cli](https://github.com/flyfy1/life-cli)** — command-line client for the same backend
+
+---
+
+<sub>Built to pair with Go, React, Swift, and Kotlin clients · © integ.life</sub>
