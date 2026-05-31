@@ -1,0 +1,1 @@
+import{r as e,u as t}from"./vendor-D4lCoSq8.js";import{b as s}from"./index-CZcbwpC_.js";const r=()=>{const[r,n]=e.useState([]),[a,o]=e.useState(null),u=t(e=>e.isOfflineMode),f=u?[]:r;return e.useEffect(()=>{if(u)return;let e=!0;return s.listAIAgents().then(t=>{e&&n(t.agents||[])}).catch(t=>{e&&o(t.message)}),()=>{e=!1}},[u]),{agents:f,error:a}};export{r as u};
