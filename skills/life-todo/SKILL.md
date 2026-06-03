@@ -29,11 +29,13 @@ Useful commands:
 
 - `life list add/list/update/delete` manages todo lists.
 - `life todo add/list/show/update/done/delete` manages todos.
+- `life todo reply <uuid-prefix> "<message>"` adds a synced reply to a todo.
+- `life todo replies <uuid-prefix> --json` lists replies for a todo.
 - `life todo update <uuid-prefix> --list <list-uuid-or-name>` classifies or moves a todo.
 - `life todo update <uuid-prefix> --clear-list` removes a todo from its list.
 - `life sync` pulls and pushes pending todo/list changes through `https://api.integ.life`.
 
-When the user asks Codex to implement or fix an existing TODO, add a reply to that TODO after the work is complete. The reply should include what changed, the verification commands, and the commit hash. If the CLI does not yet expose a `todo reply` command, write through the existing sync contract with a `todo_replies` payload to `/api/notes/sync`, using the saved CLI token from `~/.integlife/token` or `INTEGLIFE_API_TOKEN`.
+When the user asks Codex to implement or fix an existing TODO, add a reply to that TODO after the work is complete. The reply should include what changed, the verification commands, and the commit hash. Use `go run ./cmd/life todo reply --source Codex --actor Codex <uuid-prefix> "<message>"`, then run `go run ./cmd/life sync` and verify with `go run ./cmd/life todo replies <uuid-prefix> --json`.
 
 For category/list-specific queries, sync first, list categories, resolve the exact list name or UUID, then filter todos:
 
@@ -67,7 +69,13 @@ If `life-on-golang` MCP tools are available in the session, they can be used ins
 - Verification commands and whether they passed.
 - The commit hash.
 
-Prefer a future CLI command such as `life todo reply <uuid-prefix> "<message>"` if available. Until then, use `/api/notes/sync` with `sync_models: ["todo_replies"]` and a `todo_replies` array containing `uuid`, `todo_uuid`, `content`, `created_at`, `updated_at`, `source_type: "api_token"`, `source_name: "Codex"`, and `actor_display_name: "Codex"`.
+Use the CLI reply command:
+
+```bash
+go run ./cmd/life todo reply --source Codex --actor Codex <uuid-prefix> "<message>"
+go run ./cmd/life sync
+go run ./cmd/life todo replies <uuid-prefix> --json
+```
 
 **Classifying.** For uncategorized todos, first list active todo lists, then move each todo to the closest list by content. If the task is ambiguous, inspect parent/notes before choosing. Confirm with a query for active todos whose `list_uuid` is empty.
 
