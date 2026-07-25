@@ -31,7 +31,7 @@ Seven skills, one per life domain. Each `SKILL.md` tells Claude *when* to trigge
 ## 🚀 Install
 
 ```bash
-git clone git@github.com:flyfy1/life.git ~/code/life-skills
+git clone git@github.com:integ-life/life.git ~/code/life-skills
 for d in ~/code/life-skills/skills/life-*; do
   ln -s "$d" ~/.claude/skills/
 done
@@ -42,7 +42,7 @@ Then point Claude Code at your integ.life MCP endpoint (`POST <your-host>/mcp/v1
 ## 🌐 Related
 
 - 🏠 **[integ.life](https://integ.life)** — sign up, web/macOS/Android/Wear OS apps
-- ⌨️ **[life-cli](https://github.com/flyfy1/life-cli)** — command-line client for the same backend
+- ⌨️ **[life-cli](https://github.com/integ-life/life-cli)** — command-line client for the same backend
 
 ---
 

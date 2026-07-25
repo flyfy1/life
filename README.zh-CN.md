@@ -31,7 +31,7 @@
 ## 🚀 安装
 
 ```bash
-git clone git@github.com:flyfy1/life.git ~/code/life-skills
+git clone git@github.com:integ-life/life.git ~/code/life-skills
 for d in ~/code/life-skills/skills/life-*; do
   ln -s "$d" ~/.claude/skills/
 done
@@ -42,7 +42,7 @@ done
 ## 🌐 相关项目
 
 - 🏠 **[integ.life](https://integ.life)** — 注册账号，网页 / macOS / Android / Wear OS 客户端
-- ⌨️ **[life-cli](https://github.com/flyfy1/life-cli)** — 同一套后端的命令行客户端
+- ⌨️ **[life-cli](https://github.com/integ-life/life-cli)** — 同一套后端的命令行客户端
 
 ---
 
