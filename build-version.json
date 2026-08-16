@@ -2,8 +2,8 @@
   "schema": "integ.life/build-version/v1",
   "repository": "integ-life/life-on-golang",
   "service": "app.integ.life",
-  "version": "git-115ddde9e4dc-dirty",
-  "commit": "115ddde9e4dc711fc1d58c87f0482026f89ef508",
-  "builtAt": "2026-08-16T03:37:50.895Z",
+  "version": "git-2c6a9d3881e3-dirty",
+  "commit": "2c6a9d3881e31db94849434b0be67579311c2b8d",
+  "builtAt": "2026-08-16T04:06:45.402Z",
   "dirty": true
 }
